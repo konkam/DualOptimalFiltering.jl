@@ -1,0 +1,4 @@
+name = "DualOptimalFiltering"
+uuid = "7baf8b3f-9d52-46d6-903d-a738528ccf5a"
+authors = ["konkam <guillaume.konkamking.work@gmail.com>"]
+version = "0.1.0"

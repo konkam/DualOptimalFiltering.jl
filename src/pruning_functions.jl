@@ -1,0 +1,38 @@
+function keep_above_threshold(Λ_of_t, wms_of_t, ε)
+    # Might be a good idea to write a specialised function for generators
+    # Anyway this has two passes on the weight vector, could be done in one pass
+    wms_of_t_c = collect(wms_of_t)
+    Λ_of_t_c = collect(Λ_of_t)
+    Λ_of_t_kept = [Λ_of_t_c[i] for i in eachindex(Λ_of_t_c) if wms_of_t_c[i] >= ε]
+    wms_of_t_kept = [wms_of_t_c[i] for i in eachindex(Λ_of_t_c) if wms_of_t_c[i] >= ε]
+    return Λ_of_t_kept, wms_of_t_kept
+end
+
+function keep_fixed_number_of_weights(Λ_of_t, wms_of_t, k)
+    if length(wms_of_t) <= k
+        return Λ_of_t, wms_of_t
+    else
+        #This is intended to work also with iterators
+        #Some more work might be needed, but it will only be implemented if this part of the code is critical for performance.
+        wms_of_t_c = collect(wms_of_t)
+        last_w = kmax(wms_of_t_c, k) |> minimum #smallest weight kept
+        return keep_above_threshold(collect(Λ_of_t), wms_of_t_c, last_w)
+    end
+end
+
+function keep_fixed_fraction(Λ_of_t, wms_of_t, fraction; total = 1.)
+    #This is not guaranteed to keep exactly the correct fraction, should be called "keep at least fraction". This keeps more when there are several weights equal to the threshold
+    sorted_wms_of_t = sort(wms_of_t, rev = true)
+    cumulative_sum::Float64 = 0.
+    i::Int64 = 0
+    max_i = length(sorted_wms_of_t)
+    # @show max_i
+    frac_times_total::Float64 = fraction * total
+    @inbounds while i <= max_i && cumulative_sum < frac_times_total
+        i +=1
+        # @show i
+        cumulative_sum += sorted_wms_of_t[i]
+    end
+    threshold = sorted_wms_of_t[i]
+    return keep_above_threshold(Λ_of_t, wms_of_t, threshold)
+end

@@ -1,4 +1,4 @@
-using SpecialFunctions
+using SpecialFunctions, IterTools
 
 "Normalises a vector"
 function normalise(x::AbstractArray)
@@ -16,5 +16,39 @@ function lgamma_local(x::Integer)
     else
         # return SpecialFunctions.logfactorial(x)
         return SpecialFunctions.logabsgamma(x)[1]
+    end
+end
+
+function kmax(x::AbstractArray{T, 1}, k::Integer) where T <: Number
+    if length(x) < k
+        error("length(x) < $k, cannot take the $k largest elements of a vector of size $(length(x))")
+    else
+        res = x[(end-k+1):end]
+        return kmax_rec(x, k, findmin(res), res)
+    end
+end
+
+import Base.length
+
+function length(x::Union{IterTools.Distinct})
+    l = 0
+    for k in x
+        l +=1
+    end
+    return l
+end
+
+
+function kmax_rec(x::AbstractArray{T, 1}, k::Integer, smallest::Tuple{T,U}, res::AbstractArray{T, 1}) where {T <: Number, U <: Integer}
+    # println("x = $x")
+    # println("smallest = $smallest")
+    # println("res = $res")
+    if length(x) == k
+        return res
+    else
+        if x[1] > smallest[1]
+            res[smallest[2]] = x[1]
+        end
+        return kmax_rec(x[2:end], k, findmin(res), res)
     end
 end

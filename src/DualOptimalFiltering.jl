@@ -7,4 +7,5 @@ include("pruning_functions.jl")
 include("CIR_functions.jl")
 include("filtering_CIR.jl")
 include("approx_filtering_CIR.jl")
+include("likelihood_CIR.jl")
 end # module

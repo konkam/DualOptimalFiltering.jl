@@ -1,5 +1,6 @@
 module DualOptimalFiltering
 
-greet() = print("Hello World!")
+include("mcmc_sampler.jl")
+include("CIR_functions.jl")
 
 end # module

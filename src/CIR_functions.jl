@@ -66,3 +66,10 @@ function next_wms_prime_from_wms(wms, Λ, Δt, θ, γ, σ)
     end
     return wms_prime
 end
+
+function d_CIR(m::Integer, n::Integer)
+    return m .+ n
+end
+function e_CIR(θ1::Real, θ2::Real, β::Real)
+    return θ1 + θ2 - β
+end

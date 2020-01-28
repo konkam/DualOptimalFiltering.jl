@@ -52,3 +52,21 @@ function kmax_rec(x::AbstractArray{T, 1}, k::Integer, smallest::Tuple{T,U}, res:
         return kmax_rec(x[2:end], k, findmin(res), res)
     end
 end
+
+function precompute_lgamma_α(α, data)
+    return lgamma_local.(i + α for i in 0:sum(sum.(values(data))))
+end
+
+function precompute_lfactorial(data)
+    return  SpecialFunctions.logfactorial.(1:maximum(maximum.(values(data))))
+end
+
+"Converts a dictionary to a new dictionary with log values"
+function convert_weights_to_logweights(weights_dict)
+    return Dict(k => log.(v) for (k,v) in weights_dict)
+end
+
+"Converts a dictionary to a new dictionary with exponential values"
+function convert_logweights_to_weights(weights_dict)
+    return Dict(k => exp.(v) for (k,v) in weights_dict)
+end

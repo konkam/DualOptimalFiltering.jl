@@ -70,3 +70,15 @@ end
 function convert_logweights_to_weights(weights_dict)
     return Dict(k => exp.(v) for (k,v) in weights_dict)
 end
+
+using Memoization
+@memoize function log_pochammer_rec(x::Real, n::Integer)
+    # @info "n=$n"
+    if n==0
+        return 0.
+    elseif n==1
+        return log(x)
+    else
+        return log(x + n - 1)  + log_pochammer_rec(x, n-1)
+    end
+end

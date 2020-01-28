@@ -51,3 +51,20 @@ function prune_keeping_above_threshold_log_wms(Λ_of_t, log_wms_of_t, ε::Real)
     Λ_of_t_kept, log_wms_of_t_kept = keep_above_threshold(Λ_of_t, log_wms_of_t, log(ε))
     return Λ_of_t_kept, log_wms_of_t_kept .- logsumexp(log_wms_of_t_kept)
 end
+
+function prune_all_dicts(Λ_of_ts, wms_of_ts, pruning_function)
+    Λ_of_ts_pruned = Dict()
+    wms_of_ts_pruned = Dict()
+    for k in keys(Λ_of_ts)
+        Λ_of_ts_pruned[k], wms_of_ts_pruned[k] = pruning_function(Λ_of_ts[k], wms_of_ts[k])
+    end
+    return Λ_of_ts_pruned, wms_of_ts_pruned
+end
+function prune_all_dicts(Λ_of_ts::Dict{Float64, Array{Int64,1}}, wms_of_ts::Dict{Float64, Array{Float64,1}}, pruning_function::Function)
+    Λ_of_ts_pruned = Dict{Float64, Array{Int64,1}}()
+    wms_of_ts_pruned = Dict{Float64, Array{Float64,1}}()
+    for k in keys(Λ_of_ts)
+        Λ_of_ts_pruned[k], wms_of_ts_pruned[k] = pruning_function(Λ_of_ts[k], wms_of_ts[k])
+    end
+    return Λ_of_ts_pruned, wms_of_ts_pruned
+end

@@ -10,4 +10,5 @@ include("filtering_CIR.jl")
 include("approx_filtering_CIR.jl")
 include("likelihood_CIR.jl")
 include("smoothing_CIR.jl")
+include("joint_smoothing_CIR.jl")
 end # module

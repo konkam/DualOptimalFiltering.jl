@@ -5,7 +5,7 @@ include("common_utility_functions.jl")
 include("pruning_functions.jl")
 include("general_smoothing_functions.jl")
 
-include("CIR_functions.jl")
+include("functions_CIR.jl")
 include("filtering_CIR.jl")
 include("approx_filtering_CIR.jl")
 include("likelihood_CIR.jl")

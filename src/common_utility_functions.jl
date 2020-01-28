@@ -82,3 +82,41 @@ end
 #         return log(x + n - 1)  + log_pochammer_rec(x, n-1)
 #     end
 # end
+
+function test_equal_spacing_of_observations(data; override = false, digits_after_comma_for_time_precision = 4)
+    if !override&&(data |> keys |> collect |> sort |> diff |> x -> round.(x; digits = digits_after_comma_for_time_precision) |> unique |> length > 1)
+        println(data |> keys |> collect |> sort |> diff |> x -> truncate_float.(x,digits_after_comma_for_time_precision) |> unique)
+        error("Think twice about precomputing all terms, as the time intervals are not equal. You can go ahead using the option 'override = true.'")
+    end
+end
+
+function log_binomial_safe_but_slow(n::Int64, k::Int64)
+    @assert n >= 0
+    @assert k >= 0
+    @assert k <= n
+    if k == 0 || k == n
+        return 0
+    elseif k == 1 || k == n-1
+        return log(n)
+    else
+        return sum(log(i) for i in (n-k+1):n) - sum(log(i) for i in 2:k)
+    end
+end
+
+function log_descending_fact_no0(x::Real, n::Int64)
+    return sum(log(x-i) for i in 0:(n-1))
+end
+
+function log_pochammer(x::Real, n::Integer)
+    if n==0
+        return 0.
+    elseif n==1
+        return log(x)
+    else
+        return sum(log(x + i) for i in 0:(n-1))
+    end
+end
+
+function loghypergeom_pdf_using_precomputed(i, m, si::Integer, sm::Integer, log_binomial_coeff_ar_offset::Array{Float64,2})
+    return sum(log_binomial_coeff_ar_offset[m[k]+1,i[k]+1] for k in eachindex(m)) - log_binomial_coeff_ar_offset[sm+1, si+1]
+end

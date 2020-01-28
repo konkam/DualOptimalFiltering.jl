@@ -1,6 +1,6 @@
 using IterTools, DataStructures
 
-function update_WF_params(wms::Array{Ty,1}, α::Array{Ty,1}, Λ::Array{Array{Int64,1},1}, y::Array{Int64,2}; debug = true) where Ty<:Number
+function update_WF_params(wms::Array{Ty,1}, α::Array{Ty,1}, Λ::Array{Array{Int64,1},1}, y::Array{Int64,2}; debug = false) where Ty<:Number
     #y is a matrix of dimension J*K, with K the dimension of the process
     # and J the number of observations
     # Julia is in row major, so the first index indicates the row (index of observation)
@@ -85,4 +85,63 @@ function WF_prediction_for_one_m_precomputed(m::Array{Int64,1}, sα::Ty, t::Ty, 
 
     Dict( collect(n) => fun_n(n) for n in gm ) |> Accumulator
 
+end
+
+function filter_WF_adaptive_precomputation_ar(α, data, do_the_pruning::Function; silence = false, return_precomputed_terms = false)
+    # println("filter_WF_mem2")
+
+    @assert length(α) == length(data[collect(keys(data))[1]])
+    Δt = assert_constant_time_step_and_compute_it(data)
+
+    smmax = values(data) |> sum |> sum
+    log_ν_ar = Array{Float64}(undef, smmax, smmax)
+    log_Cmmi_ar = Array{Float64}(undef, smmax, smmax)
+    log_binomial_coeff_ar_offset = Array{Float64}(undef,    smmax+1, smmax+1)
+
+    sα = sum(α)
+    times = keys(data) |> collect |> sort
+    Λ_of_t = Dict()
+    wms_of_t = Dict()
+
+    filtered_Λ, filtered_wms = update_WF_params([1.], α, [repeat([0], inner = length(α))], data[times[1]])
+    Λ_pruned, wms_pruned = do_the_pruning(filtered_Λ, filtered_wms)
+
+    Λ_of_t[times[1]] = filtered_Λ
+    wms_of_t[times[1]] = filtered_wms
+    new_sm_max = maximum(sum.(Λ_pruned))
+    precompute_next_terms_ar!(0, new_sm_max, log_ν_ar, log_Cmmi_ar, log_binomial_coeff_ar_offset, sα, Δt)
+    sm_max_so_far = new_sm_max
+
+    for k in 1:(length(times)-1)
+        if (!silence)
+            println("Step index: $k")
+            println("Number of components: $(length(filtered_Λ))")
+        end
+        last_sm_max = maximum(sum.(Λ_pruned))
+        new_sm_max = last_sm_max + sum(data[times[k+1]])
+
+        if sm_max_so_far < new_sm_max
+            precompute_next_terms_ar!(sm_max_so_far, new_sm_max, log_ν_ar, log_Cmmi_ar, log_binomial_coeff_ar_offset, sα, Δt)
+            sm_max_so_far = max(sm_max_so_far,new_sm_max)
+        end
+
+        filtered_Λ, filtered_wms = get_next_filtering_distribution_precomputed(Λ_pruned, wms_pruned, times[k], times[k+1], α, sα, data[times[k+1]], log_ν_ar, log_Cmmi_ar, log_binomial_coeff_ar_offset)
+        Λ_pruned, wms_pruned = do_the_pruning(filtered_Λ, filtered_wms)
+        Λ_of_t[times[k+1]] = filtered_Λ
+        wms_of_t[times[k+1]] = filtered_wms
+    end
+
+    if return_precomputed_terms
+        return Λ_of_t, wms_of_t, log_ν_ar, log_Cmmi_ar, log_binomial_coeff_ar_offset, sm_max_so_far
+    else
+        return Λ_of_t, wms_of_t
+    end
+
+end
+
+function get_next_filtering_distribution_precomputed(current_Λ, current_wms, current_time, next_time, α, sα, next_y, precomputed_log_ν, precomputed_log_Cmmi, precomputed_log_binomial_coeff)
+    predicted_Λ, predicted_wms = predict_WF_params_precomputed(current_wms, sα, current_Λ, next_time-current_time, precomputed_log_ν, precomputed_log_Cmmi, precomputed_log_binomial_coeff)
+    filtered_Λ, filtered_wms = update_WF_params(predicted_wms, α, predicted_Λ, next_y)
+
+    return filtered_Λ, filtered_wms
 end

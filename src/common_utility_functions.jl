@@ -120,3 +120,12 @@ end
 function loghypergeom_pdf_using_precomputed(i, m, si::Integer, sm::Integer, log_binomial_coeff_ar_offset::Array{Float64,2})
     return sum(log_binomial_coeff_ar_offset[m[k]+1,i[k]+1] for k in eachindex(m)) - log_binomial_coeff_ar_offset[sm+1, si+1]
 end
+
+function assert_constant_time_step_and_compute_it(data)
+    Δts = keys(data) |> collect |> sort |> diff |> unique
+    if length(Δts) > 1
+        test_equal_spacing_of_observations(data; override = false)
+    end
+    Δt = mean(Δts)
+    return Δt
+end

@@ -145,3 +145,6 @@ function get_next_filtering_distribution_precomputed(current_Λ, current_wms, cu
 
     return filtered_Λ, filtered_wms
 end
+
+
+filter_WF = filter_WF_adaptive_precomputation_ar

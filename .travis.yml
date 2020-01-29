@@ -7,4 +7,5 @@ codecov: true
 coveralls: true
 
 before_install:
-  - julia --project -e 'import Pkg; Pkg.add(Pkg.PackageSpec(url="https://github.com/konkam/FeynmanKacParticleFilters.jl")); Pkg.add(Pkg.PackageSpec(url="https://github.com/konkam/ExactWrightFisher.jl"))'
+  - julia --project -e 'import Pkg; Pkg.add(Pkg.PackageSpec(url="https://github.com/konkam/FeynmanKacParticleFilters.jl"))'
+  - julia --project -e 'import Pkg; Pkg.add(Pkg.PackageSpec(url="https://github.com/konkam/ExactWrightFisher.jl"))'

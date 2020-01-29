@@ -34,5 +34,13 @@ using ExactWrightFisher
 
     @test_nowarn DualOptimalFiltering.precompute_next_terms_ar!(0, 12, log_ν_ar, log_Cmmi_ar, log_binomial_coeff_ar_offset, 3.1, 0.2)
 
-    DualOptimalFiltering.WF_loglikelihood_from_adaptive_filtering(α, data, (x, y)-> (x, y); silence = false)
+    @test_nowarn DualOptimalFiltering.WF_loglikelihood_from_adaptive_filtering(α, data, (x, y)-> (x, y); silence = false)
+
+    @test_nowarn DualOptimalFiltering.log_likelihood_WF_fixed_number(α, data, 3; silence = false)
+
+    @test_nowarn DualOptimalFiltering.log_likelihood_WF_fixed_fraction(α, data, 0.99; silence = false)
+
+    @test_nowarn DualOptimalFiltering.log_likelihood_WF_keep_above_threshold(α, data, 0.001; silence = false)
+
+
 end

@@ -129,3 +129,27 @@ function assert_constant_time_step_and_compute_it(data)
     Δt = mean(Δts)
     return Δt
 end
+
+function sample_from_Gamma_mixture(δ, θ, Λ, wms)
+    #use 1/θ because of the way the Gamma distribution is parameterised in Julia Distributions.jl
+
+    latent_mixture_idx = rand(Categorical(wms))
+    return rand(Gamma(δ/2 + Λ[latent_mixture_idx], 1/θ))
+end
+function create_gamma_mixture_parameters(δ, θ, Λ)
+    α = [δ/2 + m for m in Λ]
+    β = [θ for m in Λ]
+    return α, β
+end
+function create_gamma_mixture_pdf(δ, θ, Λ, wms)
+    #use 1/θ because of the way the Gamma distribution is parameterised in Julia Distributions.jl
+    return x -> sum(wms.*Float64[pdf(Gamma(δ/2 + m, 1/θ),x) for m in Λ])
+end
+
+function create_dirichlet_mixture(α::Array{T, 1}, Λ::Array{Array{U,1},1}) where {T <: Real, U <:Integer}
+    α_mixt = Array{Array{T,1},1}(undef, length(Λ))
+    for i in eachindex(Λ)
+        α_mixt[i] = α .+ Λ[i]
+    end
+    return α_mixt
+end

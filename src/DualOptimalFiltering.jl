@@ -9,6 +9,7 @@ include("pruning_functions.jl")
 include("general_smoothing_functions.jl")
 include("kde_for_pf_samples.jl")
 include("dirichlet_kde.jl")
+include("exact_L2_distances.jl")
 
 include("functions_CIR.jl")
 include("filtering_CIR.jl")

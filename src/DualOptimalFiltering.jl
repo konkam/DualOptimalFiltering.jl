@@ -16,4 +16,5 @@ include("functions_WF.jl")
 include("filtering_WF.jl")
 include("approx_filtering_WF.jl")
 include("likelihood_WF.jl")
+include("particle_filtering_WF.jl")
 end # module

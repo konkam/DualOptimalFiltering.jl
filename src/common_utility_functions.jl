@@ -153,3 +153,19 @@ function create_dirichlet_mixture(α::Array{T, 1}, Λ::Array{Array{U,1},1}) wher
     end
     return α_mixt
 end
+
+function get_quantiles_from_mass(mass)
+    qinf = 0.5*(1-mass)
+    return (qinf, 1-qinf)
+end
+
+function create_Gamma_mixture_density(δ, θ, Λ, wms)
+    #use 1/θ because of the way the Gamma distribution is parameterised in Julia Distributions.jl
+    return x -> sum(wms.*Float64[pdf(Gamma(δ/2 + m, 1/θ),x) for m in Λ])
+end
+
+function compute_quantile_mixture_hpi(δ, θ, Λ, wms, q::Float64)
+    #use 1/θ because of the way the Gamma distribution is parameterised in Julia Distributions.jl
+    f = x -> sum(wms.*Float64[cdf(Gamma(δ/2 + m, 1/θ),x) for m in Λ])
+    return fzero(x -> f(x)-q, 0, 10^9)
+end

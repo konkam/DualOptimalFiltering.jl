@@ -12,7 +12,6 @@ include("dirichlet_kde.jl")
 include("exact_L2_distances.jl")
 include("post_process_Dirichlet_mixture_posterior.jl")
 
-
 include("functions_CIR.jl")
 include("filtering_CIR.jl")
 include("approx_filtering_CIR.jl")

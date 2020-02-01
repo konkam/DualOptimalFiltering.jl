@@ -19,6 +19,8 @@ include("likelihood_CIR.jl")
 include("smoothing_CIR.jl")
 include("joint_smoothing_CIR.jl")
 include("reparam_CIR.jl")
+include("full_inference_CIR.jl")
+
 
 include("functions_WF.jl")
 include("filtering_WF.jl")

@@ -17,11 +17,10 @@ function draw_next_sample(state::T, Jtsym_rand::Function, unnormalised_logposter
     end
 end
 
-function get_mcmc_samples_bare(nsamp, starting_state, Jtsym_rand_create::Function, unnormalised_logposterior::Function; silence = false, print_acceptance_rate = false)
+function get_mcmc_samples_bare(nsamp, starting_state, Jtsym_rand::Function, unnormalised_logposterior::Function; silence = false, print_acceptance_rate = false)
     chain = Array{typeof(first(starting_state)), 2}(undef, length(starting_state), nsamp+1)
     chain[:,1] = starting_state
 
-    Jtsym_rand = Jtsym_rand_create(starting_state)
     @assert size(Jtsym_rand(starting_state)) == size(starting_state)
 
     @inbounds for i in 2:(nsamp+1)
@@ -37,7 +36,7 @@ function get_mcmc_samples_bare(nsamp, starting_state, Jtsym_rand_create::Functio
 end
 
 get_mcmc_samples(nsamp, starting_state, Jtsym_rand_create::Function, unnormalised_logposterior::Function; warmup_percentage = 0.1, final_size = Inf, silence = false, print_acceptance_rate = false) =
-get_mcmc_samples_bare(nsamp, starting_state, Jtsym_rand_create, unnormalised_logposterior, silence = silence, print_acceptance_rate = print_acceptance_rate) |> c -> discard_warmup(c, warmup_percentage) |> c -> thin_chain(c, final_size)
+get_mcmc_samples_bare(nsamp, starting_state, Jtsym_rand_create(starting_state), unnormalised_logposterior, silence = silence, print_acceptance_rate = print_acceptance_rate) |> c -> discard_warmup(c, warmup_percentage) |> c -> thin_chain(c, final_size)
 
 function discard_warmup(chain, percentage)
     idcut = Int64(round(size(chain, 2) * percentage))

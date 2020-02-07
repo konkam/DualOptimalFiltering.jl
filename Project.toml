@@ -4,6 +4,7 @@ authors = ["konkam <guillaume.konkamking.work@gmail.com>"]
 version = "0.1.0"
 
 [deps]
+CovarianceEstimation = "587fd27a-f159-11e8-2dae-1979310e6154"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 DataFramesMeta = "1313f7d8-7da2-5740-9ea0-a2ca25f37964"
 DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
@@ -12,6 +13,7 @@ ExactWrightFisher = "8c1589a6-e1d0-11e8-3509-29fca4fccf6a"
 FeynmanKacParticleFilters = "b43f8e06-e683-11e8-294f-8d3ef32cb08c"
 IterTools = "c8e1da08-722c-5040-9ed9-7db0dc04731e"
 KernelEstimator = "857edff2-01a9-55ba-8bc9-13e46c0ddbb2"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Memoization = "6fafb56a-5788-4b4e-91ca-c0cea6611c73"
 Optim = "429524aa-4258-5aef-a3af-852621145aeb"
 Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"

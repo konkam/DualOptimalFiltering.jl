@@ -1,4 +1,4 @@
-using Distributions
+using Distributions, CovarianceEstimation, LinearAlgebra
 
 function draw_next_sample(state::T, Jtsym_rand::Function, unnormalised_logposterior::Function) where T
     new_state::T = Jtsym_rand(state)
@@ -65,4 +65,24 @@ function Jtnorm_create(starting_state)
         return rand(Normal(0,0.5), length(starting_state)) .+ state
     end
     return Jtnorm
+end
+
+
+function estimate_jumping_rule(length_pilot_run, starting_Jtnorm_create, starting_state, unnormalised_logposterior::Function; warmup_percentage = 0.5, print_optimal_jump_size = false)
+
+    mcmc_chain = get_mcmc_samples(length_pilot_run, starting_state, starting_Jtnorm_create, unnormalised_logposterior; print_acceptance_rate = false,  warmup_percentage =  warmup_percentage)
+
+    estimated_cov_matrix = cov(AnalyticalNonlinearShrinkage(;corrected=false),mcmc_chain') |> Hermitian |> collect
+
+    optimal_jump_size = estimated_cov_matrix*2.4/sqrt(length(starting_state)) # Gelman et al., Bayesian Data Analysis (2014) p.296
+
+    if print_optimal_jump_size
+        println(optimal_jump_size)
+    end
+
+    function optimal_kernel(state)
+        return rand(MvNormal(optimal_jump_size)) .+ state
+    end
+
+    return optimal_kernel
 end

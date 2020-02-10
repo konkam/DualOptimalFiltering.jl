@@ -20,7 +20,7 @@ function joint_loglikelihood_CIR(data, trajectory, times, δ, γ, σ, λ)
     return hidden_signal_loglikelihood_CIR(trajectory, times, δ, γ, σ) + emitted_data_conditional_loglikelihood_CIR(data, trajectory, times, λ)
 end
 
-function joint_sampler_CIR_pruning_precompute(data, λ, prior_logpdf, θ_init, niter, do_the_pruning::Function; final_chain_length = 1000, silence = false, jump_size = 0.5*Matrix(I,3,3))
+function joint_sampler_CIR_pruning_precompute(data, λ, prior_logpdf, θ_init, niter, do_the_pruning::Function; final_chain_length = 1000, silence = false, jump_size = 0.5*Matrix(I,3,3), reparam = false)
 
     trajectory_chain = Array{Float64,2}(undef, niter, length(data |> keys))
     parameter_chain = Array{Float64,2}(undef, niter, 3)
@@ -50,12 +50,24 @@ function joint_sampler_CIR_pruning_precompute(data, λ, prior_logpdf, θ_init, n
         # Sample trajectory
 
         #Not using the logfunction because not implemented yet
-        Λ_of_t, wms_of_t, θ_of_t = filter_CIR_pruning(θ_it[1], θ_it[2], θ_it[3], λ, data, do_the_pruning, silence = true)
-        Λ_of_t_pruned, wms_of_t_pruned =  prune_all_dicts(Λ_of_t, wms_of_t, do_the_pruning)
-        # logwms_of_t = log.(wms_of_t)
-        # logwms_pred_of_t = log.(wms_pred_of_t)
-        # 1, 1, 1 are dummy arguments
-        X_it = sample_1_trajectory_from_joint_smoothing_CIR_precompute(θ_it[1], θ_it[2], θ_it[3], Λ_of_t_pruned, wms_of_t_pruned, θ_of_t, 1, 1, 1, data)
+        if reparam
+            θ_it_δγ_param = inverse_reparam_CIR(θ_it...)
+            Λ_of_t, wms_of_t, θ_of_t = filter_CIR_pruning(θ_it_δγ_param[1], θ_it_δγ_param[2], θ_it_δγ_param[3], λ, data, do_the_pruning, silence = true)
+            Λ_of_t_pruned, wms_of_t_pruned =  prune_all_dicts(Λ_of_t, wms_of_t, do_the_pruning)
+            # logwms_of_t = log.(wms_of_t)
+            # logwms_pred_of_t = log.(wms_pred_of_t)
+            # 1, 1, 1 are dummy arguments
+            X_it = sample_1_trajectory_from_joint_smoothing_CIR_precompute(θ_it_δγ_param[1], θ_it_δγ_param[2], θ_it_δγ_param[3], Λ_of_t_pruned, wms_of_t_pruned, θ_of_t, 1, 1, 1, data)
+        else
+            Λ_of_t, wms_of_t, θ_of_t = filter_CIR_pruning(θ_it[1], θ_it[2], θ_it[3], λ, data, do_the_pruning, silence = true)
+            Λ_of_t_pruned, wms_of_t_pruned =  prune_all_dicts(Λ_of_t, wms_of_t, do_the_pruning)
+            # logwms_of_t = log.(wms_of_t)
+            # logwms_pred_of_t = log.(wms_pred_of_t)
+            # 1, 1, 1 are dummy arguments
+            X_it = sample_1_trajectory_from_joint_smoothing_CIR_precompute(θ_it[1], θ_it[2], θ_it[3], Λ_of_t_pruned, wms_of_t_pruned, θ_of_t, 1, 1, 1, data)
+        end
+
+
 
         @debug "iteration $it"
         @debug "trajectory" X_it
@@ -67,7 +79,7 @@ function joint_sampler_CIR_pruning_precompute(data, λ, prior_logpdf, θ_init, n
         # Record iteration
 
         trajectory_chain[it,:] = X_it
-        parameter_chain[it,:] = θ_it
+        parameter_chain[it,:] = collect(θ_it)
 
     end
 

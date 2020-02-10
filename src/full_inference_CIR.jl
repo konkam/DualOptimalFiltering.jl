@@ -20,7 +20,7 @@ function joint_loglikelihood_CIR(data, trajectory, times, δ, γ, σ, λ)
     return hidden_signal_loglikelihood_CIR(trajectory, times, δ, γ, σ) + emitted_data_conditional_loglikelihood_CIR(data, trajectory, times, λ)
 end
 
-function joint_sampler_CIR_pruning_precompute(data, λ, prior_logpdf, θ_init, niter, do_the_pruning::Function; final_chain_length = 1000, silence = false, jump_size = 0.5)
+function joint_sampler_CIR_pruning_precompute(data, λ, prior_logpdf, θ_init, niter, do_the_pruning::Function; final_chain_length = 1000, silence = false, jump_size = 0.5*Matrix(I,3,3))
 
     trajectory_chain = Array{Float64,2}(undef, niter, length(data |> keys))
     parameter_chain = Array{Float64,2}(undef, niter, 3)
@@ -37,7 +37,7 @@ function joint_sampler_CIR_pruning_precompute(data, λ, prior_logpdf, θ_init, n
 
     θ_it = θ_init
 
-    Jtsym_rand(θ) = rand(Normal(0, jump_size), 3) .+ θ
+    Jtsym_rand(θ) = rand(MvNormal(zeros(3), jump_size)) .+ θ
 
     for it in 1:niter
 
@@ -74,7 +74,7 @@ function joint_sampler_CIR_pruning_precompute(data, λ, prior_logpdf, θ_init, n
     return parameter_chain, trajectory_chain
 end
 
-function joint_sampler_CIR_keep_fixed_number_precompute(data, λ, prior_logpdf, θ_init, niter, fixed_number::Int64; final_chain_length = 1000, silence = false, jump_size = 0.5)
+function joint_sampler_CIR_keep_fixed_number_precompute(data, λ, prior_logpdf, θ_init, niter, fixed_number::Int64; final_chain_length = 1000, silence = false, jump_size = 0.5*Matrix(I,3,3))
     # println("filter_WF_mem2")
 
     function prune_keeping_fixed_number(Λ_of_t, wms_of_t)

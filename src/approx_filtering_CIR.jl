@@ -62,3 +62,9 @@ function filter_CIR_pruning(δ, γ, σ, λ, data, do_the_pruning::Function; sile
     return Λ_of_t, wms_of_t, θ_of_t
 
 end
+
+function filter_CIR_pruning_logweights(δ, γ, σ, λ, data, do_the_pruning::Function; silence = false)
+    Λ_of_t, wms_of_t, θ_of_t = filter_CIR_pruning(δ, γ, σ, λ, data, do_the_pruning::Function; silence = silence)
+    logwms_of_t = wms_of_t |> convert_weights_to_logweights
+    return Λ_of_t, logwms_of_t, θ_of_t
+end

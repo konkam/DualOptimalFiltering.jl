@@ -37,6 +37,23 @@ function keep_fixed_fraction(Λ_of_t, wms_of_t, fraction; total = 1.)
     return keep_above_threshold(Λ_of_t, wms_of_t, threshold)
 end
 
+function keep_fixed_fraction_logw(Λ_of_t, logwms_of_t, fraction; logtotal = 0.)
+    #This is not guaranteed to keep exactly the correct fraction, should be called "keep at least fraction". This keeps more when there are several weights equal to the threshold
+    sorted_logwms_of_t = sort(logwms_of_t, rev = true)
+    cumulative_logsum::Float64 = -Inf
+    i::Int64 = 0
+    max_i = length(sorted_logwms_of_t)
+    # @show max_i
+    logfrac_times_total::Float64 = log(fraction) + logtotal
+    @inbounds while i <= max_i && cumulative_logsum < logfrac_times_total
+        i +=1
+        # @show i
+        cumulative_logsum = logaddexp(cumulative_logsum, sorted_logwms_of_t[i])
+    end
+    logthreshold = sorted_logwms_of_t[i]
+    return keep_above_threshold(Λ_of_t, logwms_of_t, logthreshold)
+end
+
 function prune_keeping_fixed_fraction_log_wms(Λ_of_t, log_wms_of_t, fraction::Real)
     Λ_of_t_kept, wms_of_t_kept = keep_fixed_fraction(Λ_of_t, exp.(log_wms_of_t), fraction)
     return Λ_of_t_kept, log.(normalise(wms_of_t_kept))

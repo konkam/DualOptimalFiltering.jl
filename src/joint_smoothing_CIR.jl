@@ -49,7 +49,7 @@ function compute_normalisation_constant_joint_smoothing_CIR(xip1, θ, θ_primeΔ
     s = 0
     Δs = 1
     k=0
-    while k <= 10^2 || (Δs > 0 && k <= 10^4)
+    while k <= 10^2 || (Δs > 0 && k <= 10^5)
         xx = pdf(Gamma(δ/2+k, 1/θ_primeΔt*exp(-2*γ*Δt)), xip1)
         Δs = 0
         for idx in eachindex(filtering_indices)
@@ -64,11 +64,11 @@ function compute_normalisation_constant_joint_smoothing_CIR(xip1, θ, θ_primeΔ
 end
 
 function compute_normalisation_constant_adaptive_precomputation(xip1, θ, θ_primeΔt, filtering_weights, filtering_indices, Δt, δ, γ, σ, precomputed_terms, last_k, mmax)
-    # Careful that this can fail if the increments are not monotonous, i.e. Δs=0 for some values, then starts increasing. Could add a lower limit on k
+    # Careful that this can fail if the increments are not monotonous, i.e. Δs=0 for some values, then starts increasing. Added a lower limit on k
     s = 0
     Δs_rel = 1
     k=0
-    while s <= 0 || k <= 10^2 || (Δs_rel > 0 && k <= 10^4)
+    while s <= 0 || k <= 10^2 || (Δs_rel > 0 && k <= 10^5)
 
         if k > last_k
             last_k = k
@@ -164,7 +164,7 @@ end
 function select_κM_precomputed(xip1, θ, θ_primeΔt, U, filtering_weights, filtering_indices, Δt, δ, γ, σ, pred_dens_val, precomputed_terms)
     k = 0
     s = 0
-    while k < 10^4
+    while k < 10^5
         w_tilde_k = pdf(Gamma(δ/2+k, 1/θ_primeΔt*exp(-2*γ*Δt)), xip1)/pred_dens_val# Careful about the parametrisation of Gamma
         for idx in eachindex(filtering_indices)
             m = filtering_indices[idx]

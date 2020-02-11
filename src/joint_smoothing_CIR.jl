@@ -144,7 +144,7 @@ end
 function select_κM_logw(xip1, θ, θ_primeΔt, U, log_filtering_weights, filtering_indices, Δt, δ, γ, σ, pred_dens_val)
     k = 0
     logs = -Inf
-    while k < 10^4
+    while k < 10^5
         logw_tilde_k = logpdf(Gamma(δ/2+k, 1/θ_primeΔt*exp(-2*γ*Δt)), xip1) - log(pred_dens_val)# Careful about the parametrisation of Gamma
         for idx in eachindex(filtering_indices)
             m = filtering_indices[idx]

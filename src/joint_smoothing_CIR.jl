@@ -26,7 +26,7 @@ function sample_1_trajectory_from_joint_smoothing_CIR_precompute(δ, γ, σ, Λ_
     sample_trajectory = zeros(ntimes)
     mmax = maximum(maximum.(values(Λ_of_t)))
 
-    log_pochammer_precomputed_terms = Array{Float64, 2}(undef, mmax+1, 10^4)
+    log_pochammer_precomputed_terms = Array{Float64, 2}(undef, mmax+1, 10^5)#Might need to be updated for larger datasets
 
     last_k = 0
 

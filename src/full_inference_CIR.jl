@@ -26,6 +26,16 @@ function joint_sampler_CIR_pruning_precompute(data, λ, prior_logpdf, θ_init, n
     parameter_chain = Array{Float64,2}(undef, niter, 3)
     times = data |> keys |> collect |> sort
 
+
+    #Not using the logfunction because not implemented yet
+    function unnormalised_logposterior_reparam(a, b, σ_prime, trajectory)::Float64
+        prior_contribution = prior_logpdf(a, b, σ_prime)
+        if isinf(prior_contribution) #Avoids likelihood computation in this case
+           return prior_contribution
+        else
+            return prior_contribution + reparam_joint_loglikelihood_CIR(data, trajectory, times, a, b, σ_prime, λ)::Float64
+        end
+    end
     function unnormalised_logposterior(δ, γ, σ, trajectory)::Float64
         prior_contribution = prior_logpdf(δ, γ, σ)
         if isinf(prior_contribution) #Avoids likelihood computation in this case
@@ -34,6 +44,8 @@ function joint_sampler_CIR_pruning_precompute(data, λ, prior_logpdf, θ_init, n
             return prior_contribution + joint_loglikelihood_CIR(data, trajectory, times, δ, γ, σ, λ)::Float64
         end
     end
+
+
 
     θ_it = θ_init
 
@@ -74,8 +86,11 @@ function joint_sampler_CIR_pruning_precompute(data, λ, prior_logpdf, θ_init, n
 
         # Metropolis-Hastings step
 
-        θ_it = draw_next_sample(θ_it, Jtsym_rand, st -> unnormalised_logposterior(st[1], st[2], st[3], X_it))
-
+        if reparam
+            θ_it = draw_next_sample(θ_it, Jtsym_rand, st -> unnormalised_logposterior_reparam(st[1], st[2], st[3], X_it))
+        else
+            θ_it = draw_next_sample(θ_it, Jtsym_rand, st -> unnormalised_logposterior(st[1], st[2], st[3], X_it))
+        end
         # Record iteration
 
         trajectory_chain[it,:] = X_it

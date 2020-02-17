@@ -1,6 +1,6 @@
 module DualOptimalFiltering
 
-export dirichletkernel, filter_WF, generate_CIR_trajectory
+export dirichletkernel, filter_CIR, filter_WF, generate_CIR_trajectory
 
 
 include("mcmc_sampler.jl")

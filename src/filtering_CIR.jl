@@ -1,4 +1,4 @@
-function filter_CIR(δ, γ, σ, λ, data; silence = false)
+function filter_CIR(δ, γ, σ, λ, data; silence = false, trim0 = false)
 
     times = keys(data) |> collect |> sort
     Λ_of_t = Dict{Float64, Array{Int64,1}}()
@@ -17,6 +17,9 @@ function filter_CIR(δ, γ, σ, λ, data; silence = false)
             println("Number of components: $(length(filtered_Λ))")
         end
         filtered_θ, filtered_Λ, filtered_wms = get_next_filtering_distribution(filtered_Λ, filtered_wms, filtered_θ, times[k], times[k+1], δ, γ, σ, λ, data[times[k+1]])
+        if trim0
+            filtered_Λ, filtered_wms = filtered_Λ[filtered_wms.>0], filtered_wms[filtered_wms.>0]
+        end
         Λ_of_t[times[k+1]] = filtered_Λ
         wms_of_t[times[k+1]] = filtered_wms
         θ_of_t[times[k+1]] = filtered_θ

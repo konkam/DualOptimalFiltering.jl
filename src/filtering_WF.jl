@@ -87,7 +87,7 @@ function WF_prediction_for_one_m_precomputed(m::Array{Int64,1}, sα::Ty, t::Ty, 
 
 end
 
-function filter_WF_adaptive_precomputation_ar(α, data, do_the_pruning::Function; silence = false, return_precomputed_terms = false)
+function filter_WF_adaptive_precomputation_ar(α, data, do_the_pruning::Function; silence = false, return_precomputed_terms = false, trim0 = false)
     # println("filter_WF_mem2")
 
     @assert length(α) == length(data[collect(keys(data))[1]])
@@ -105,6 +105,10 @@ function filter_WF_adaptive_precomputation_ar(α, data, do_the_pruning::Function
 
     filtered_Λ, filtered_wms = update_WF_params([1.], α, [repeat([0], inner = length(α))], data[times[1]])
     Λ_pruned, wms_pruned = do_the_pruning(filtered_Λ, filtered_wms)
+    
+    if trim0
+        Λ_pruned, wms_pruned = Λ_pruned[wms_pruned.>0], wms_pruned[wms_pruned.>0]
+    end
 
     Λ_of_t[times[1]] = filtered_Λ
     wms_of_t[times[1]] = filtered_wms

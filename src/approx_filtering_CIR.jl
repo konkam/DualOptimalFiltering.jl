@@ -33,7 +33,7 @@ function filter_CIR_fixed_fraction(δ, γ, σ, λ, data, fraction::Float64; sile
 
 end
 
-function filter_CIR_pruning(δ, γ, σ, λ, data, do_the_pruning::Function; silence = false)
+function filter_CIR_pruning(δ, γ, σ, λ, data, do_the_pruning::Function; silence = false, trim0 = true)
 
     times = keys(data) |> collect |> sort
     Λ_of_t = Dict{Float64, Array{Int64,1}}()
@@ -50,10 +50,14 @@ function filter_CIR_pruning(δ, γ, σ, λ, data, do_the_pruning::Function; sile
     for k in 1:(length(times)-1)
         if (!silence)
             println("Step index: $k")
-            println("Number of components: $(length(filtered_Λ))")
+            println("Number of components before pruning : $(length(filtered_Λ))")
+            println("Number of components after pruning: $(length(pruned_Λ))")
         end
         filtered_θ, filtered_Λ, filtered_wms = get_next_filtering_distribution(pruned_Λ, pruned_wms, filtered_θ, times[k], times[k+1], δ, γ, σ, λ, data[times[k+1]])
         pruned_Λ, pruned_wms = do_the_pruning(filtered_Λ, filtered_wms)
+        if trim0
+            pruned_Λ, pruned_wms = pruned_Λ[pruned_wms.>0], pruned_wms[pruned_wms.>0]
+        end
         Λ_of_t[times[k+1]] = filtered_Λ
         wms_of_t[times[k+1]] = filtered_wms
         θ_of_t[times[k+1]] = filtered_θ

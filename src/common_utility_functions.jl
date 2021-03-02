@@ -154,6 +154,8 @@ function create_dirichlet_mixture(α::Array{T, 1}, Λ::Array{Array{U,1},1}) wher
     return α_mixt
 end
 
+create_dirichlet_mixture_parameters = create_dirichlet_mixture #alis for consistency with CIR
+
 function get_quantiles_from_mass(mass)
     qinf = 0.5*(1-mass)
     return (qinf, 1-qinf)

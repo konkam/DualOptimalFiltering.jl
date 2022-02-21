@@ -14,7 +14,7 @@ We provide examples on the Cox-Ingersoll-Ross model with Poisson distributed dat
 ````julia
 
 import Pkg
-Pkg.add("https://github.com/konkam/DualOptimalFiltering.jl")
+Pkg.add(url="https://github.com/konkam/DualOptimalFiltering.jl")
 ````
 
 

@@ -25,7 +25,7 @@ function precompute_next_terms_ar!(last_sm_max::Integer, new_sm_max::Integer, lo
     end
 end
 
-function Λ_from_Λ_max(Λ_max) where U <: Integer
+function Λ_from_Λ_max(Λ_max)
     # return Base.Iterators.product((0:Λi_max for Λi_max in Λ_max)...)
     return Base.Iterators.product(map(N -> 0:N, Λ_max)...)
 end
@@ -79,7 +79,7 @@ function sign_denominator_Cmmi(k::Int64)
     end
 end
 
-function logpmmi_raw_precomputed(i, m, sm::Integer, si::Integer, t::Number, log_ν_dict::Dict{Tuple{Int64, Int64}, Float64}, log_Cmmi_dict::Dict{Tuple{Int64, Int64}, Float64}, log_binomial_coeff_dict::Dict{Tuple{Int64, Int64}, Float64}) where T <: Integer
+function logpmmi_raw_precomputed(i, m, sm::Integer, si::Integer, t::Number, log_ν_dict::Dict{Tuple{Int64, Int64}, Float64}, log_Cmmi_dict::Dict{Tuple{Int64, Int64}, Float64}, log_binomial_coeff_dict::Dict{Tuple{Int64, Int64}, Float64}) 
     return log_ν_dict[(sm, si)] + log_Cmmi_dict[(sm, si)]  + loghypergeom_pdf_using_precomputed(i, m, si, sm, log_binomial_coeff_dict)
 end
 
@@ -88,7 +88,7 @@ function logpmmi_raw_precomputed(i, m, sm::Integer, si::Integer, t::Number, log_
     return log_ν_ar[sm, si] + log_Cmmi_ar[sm, si]  + loghypergeom_pdf_using_precomputed(i, m, si, sm, log_binomial_coeff_ar_offset)
 end
 
-function logpmmi_precomputed(i, m, sm::Integer, si::Integer, t::Number, sα::Number, precomputed_log_ν, precomputed_log_Cmmi, precomputed_log_binomial_coeff) where T <: Integer
+function logpmmi_precomputed(i, m, sm::Integer, si::Integer, t::Number, sα::Number, precomputed_log_ν, precomputed_log_Cmmi, precomputed_log_binomial_coeff)
     if si==0
         return -λm(sm, sα)*t
     else

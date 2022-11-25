@@ -10,6 +10,10 @@ Optimal filtering, smoothing and general inference using a dual process.
 This package provides a set of functions to perform exact optimal filtering, smoothing or general inference using a dual process.
 We provide examples on the Cox-Ingersoll-Ross model with Poisson distributed data and the Wright-Fisher model with multinomial distributed data.
 
+This package may be used to reproduce the results from the article: [Guillaume Kon Kam King, Omiros Papaspiliopoulos, and Matteo Ruggiero. "Exact inference for a class of hidden Markov models on general state spaces." Electronic Journal of Statistics 15.1 (2021): 2832-2875.](https://projecteuclid.org/journals/electronic-journal-of-statistics/volume-15/issue-1/Exact-inference-for-a-class-of-hidden-Markov-models-on/10.1214/21-EJS1841.full)
+
+The concept and the implementation are described therein.
+
 ## Installation
 ````julia
 

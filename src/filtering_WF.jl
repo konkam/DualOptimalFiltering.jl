@@ -75,11 +75,13 @@ function WF_prediction_for_one_m_precomputed(m::Array{Int64,1}, sα::Ty, t::Ty, 
     # gm = map(x -> 0:x, m) |> vec |> x -> Iterators.product(x...)
     gm = indices_of_tree_below(m)
 
+    sm = sum(m)
+
+
     function fun_n(n)
         i = m.-n
         # println(i)
         si = sum(i)
-        sm = sum(m)
         return wm*(logpmmi_precomputed(i, m, sm, si, t, sα, precomputed_log_ν, precomputed_log_Cmmi, precomputed_log_binomial_coeff) |> exp)
     end
 

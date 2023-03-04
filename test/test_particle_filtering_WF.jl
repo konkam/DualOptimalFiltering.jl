@@ -25,4 +25,5 @@ using FeynmanKacParticleFilters
 
     @test_nowarn FeynmanKacParticleFilters.create_potential_functions(data_WF3, DualOptimalFiltering.multinomial_logpotential)
 
+    @test_nowarn DualOptimalFiltering.fit_particle_filter_WF(data_WF3, α_vec; Nparts = 100)
 end;

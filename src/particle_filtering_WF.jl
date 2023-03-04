@@ -26,3 +26,10 @@ function create_transition_kernels_WF(data, α_vec::AbstractArray{U, 1}) where {
     prior = Dirichlet(repeat([1.], K))
     return FeynmanKacParticleFilters.create_transition_kernels(data, create_Mt, prior)
 end
+
+function fit_particle_filter_WF(data, α; Nparts = 100)
+    Mt = create_transition_kernels_WF(data, α)
+    logGt = FeynmanKacParticleFilters.create_potential_functions(data, DualOptimalFiltering.multinomial_logpotential)
+    RS(W) = rand(Categorical(W), length(W))
+    FeynmanKacParticleFilters.generic_particle_filtering_adaptive_resampling_logweights(Mt, logGt, Nparts, RS)
+end

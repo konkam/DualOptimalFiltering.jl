@@ -19,6 +19,7 @@ function update_WF_params(wms::Array{Ty,1}, α::Array{Ty,1}, Λ, y::Array{Int64,
 
 
     function lpga(m::Array{Int64,1})
+    # function lpga(m)
         sm = sum(m)
         second_term = lgamma_local(sα + sm)
         third_term = sum(lgamma_local.(α + m + nK))
@@ -26,6 +27,8 @@ function update_WF_params(wms::Array{Ty,1}, α::Array{Ty,1}, Λ, y::Array{Int64,
         fifth_term = -sum(lgamma_local.(α + m))
         return first_term + second_term + third_term + fourth_term + fifth_term
     end
+
+    lpga(m) = lpga(collect(m)) #Not super clean, maybe improve or get rid of tuples altogether
 
     filter_ = wms .== 0
 

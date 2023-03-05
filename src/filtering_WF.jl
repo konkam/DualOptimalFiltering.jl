@@ -1,7 +1,8 @@
 using IterTools, DataStructures
 
-function update_WF_params(wms::Array{Ty,1}, α::Array{Ty,1}, Λ::Array{Array{Int64,1},1}, y::Array{Int64,2}; debug = false) where Ty<:Number
-    #y is a matrix of dimension J*K, with K the dimension of the process
+# function update_WF_params(wms::Array{Ty,1}, α::Array{Ty,1}, Λ::Array{Array{Int64,1},1}, y::Array{Int64,2}; debug = false) where Ty<:Number
+function update_WF_params(wms::Array{Ty,1}, α::Array{Ty,1}, Λ, y::Array{Int64,2}; debug = false) where Ty<:Number
+        #y is a matrix of dimension J*K, with K the dimension of the process
     # and J the number of observations
     # Julia is in row major, so the first index indicates the row (index of observation)
     # and the second the column (index of the dimension) (as in matrix mathematical notation)
@@ -63,6 +64,7 @@ function predict_WF_params_precomputed(wms::Array{Ty,1}, sα::Ty, Λ::Array{Arra
 
     for k in eachindex(Λ)
         res = merge(res, WF_prediction_for_one_m_precomputed(Λ[k], sα, t, precomputed_log_ν, precomputed_log_Cmmi, precomputed_log_binomial_coeff; wm = wms[k]))
+        # println("working ? $(length.(unique.(res[1])) == length.(res[1])))" )
     end
 
     ks = keys(res) |> collect
@@ -92,7 +94,9 @@ end
 function filter_WF_adaptive_precomputation_ar(α, data, do_the_pruning::Function; silence = false, return_precomputed_terms = false, trim0 = false)
     # println("filter_WF_mem2")
 
-    @assert length(α) == length(data[collect(keys(data))[1]])
+    # @assert length(α) == length(data[collect(keys(data))[1]])
+    # println("$α, $(length(data[data |> keys |> first]))")
+    @assert length(α) == length(data[data |> keys |> first])
     Δt = assert_constant_time_step_and_compute_it(data)
 
     smmax = values(data) |> sum |> sum
@@ -133,6 +137,9 @@ function filter_WF_adaptive_precomputation_ar(α, data, do_the_pruning::Function
 
         filtered_Λ, filtered_wms = get_next_filtering_distribution_precomputed(Λ_pruned, wms_pruned, times[k], times[k+1], α, sα, data[times[k+1]], log_ν_ar, log_Cmmi_ar, log_binomial_coeff_ar_offset)
         Λ_pruned, wms_pruned = do_the_pruning(filtered_Λ, filtered_wms)
+        if trim0
+            Λ_pruned, wms_pruned = Λ_pruned[wms_pruned.>0], wms_pruned[wms_pruned.>0]
+        end
         Λ_of_t[times[k+1]] = filtered_Λ
         wms_of_t[times[k+1]] = filtered_wms
     end
@@ -146,6 +153,7 @@ function filter_WF_adaptive_precomputation_ar(α, data, do_the_pruning::Function
 end
 
 function get_next_filtering_distribution_precomputed(current_Λ, current_wms, current_time, next_time, α, sα, next_y, precomputed_log_ν, precomputed_log_Cmmi, precomputed_log_binomial_coeff)
+
     predicted_Λ, predicted_wms = predict_WF_params_precomputed(current_wms, sα, current_Λ, next_time-current_time, precomputed_log_ν, precomputed_log_Cmmi, precomputed_log_binomial_coeff)
     filtered_Λ, filtered_wms = update_WF_params(predicted_wms, α, predicted_Λ, next_y)
 
@@ -153,4 +161,7 @@ function get_next_filtering_distribution_precomputed(current_Λ, current_wms, cu
 end
 
 
-filter_WF = filter_WF_adaptive_precomputation_ar
+function filter_WF(α, data; silence = false, return_precomputed_terms = false, trim0 = true)
+
+    return filter_WF_adaptive_precomputation_ar(α, data, (x, y) -> (x,y); silence = silence, return_precomputed_terms = return_precomputed_terms, trim0 = trim0)
+end

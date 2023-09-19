@@ -27,3 +27,6 @@ include("test_full_inference_CIR.jl")
 include("test_approx_filtering_WF.jl")
 include("test_likelihood_WF.jl")
 include("test_particle_filtering_WF.jl")
+
+
+include("test_CIR_particle_approximations.jl")

@@ -131,30 +131,47 @@ function assert_constant_time_step_and_compute_it(data)
 end
 
 function sample_from_Gamma_mixture(δ, θ, Λ, wms)
-    #use 1/θ because of the way the Gamma distribution is parameterised in Julia Distributions.jl
+    #use 1/θ because of the way the Gamma distribution is parametrised in Julia Distributions.jl
 
     latent_mixture_idx = rand(Categorical(wms))
     return rand(Gamma(δ/2 + Λ[latent_mixture_idx], 1/θ))
 end
+
+function sample_from_Gamma_mixture(δ, θ, Λ, wms, n)
+    #use 1/θ because of the way the Gamma distribution is parametrised in Julia Distributions.jl
+
+    latent_mixture_idx = rand(Categorical(wms))
+    return rand(Gamma(δ/2 + Λ[latent_mixture_idx], 1/θ), n)
+end
+
 function create_gamma_mixture_parameters(δ, θ, Λ)
     α = [δ/2 + m for m in Λ]
     β = [θ for m in Λ]
     return α, β
 end
 function create_gamma_mixture_pdf(δ, θ, Λ, wms)
-    #use 1/θ because of the way the Gamma distribution is parameterised in Julia Distributions.jl
+    #use 1/θ because of the way the Gamma distribution is parametrised in Julia Distributions.jl
     return x -> sum(wms.*Float64[pdf(Gamma(δ/2 + m, 1/θ),x) for m in Λ])
 end
 
-function create_dirichlet_mixture(α::Array{T, 1}, Λ::Array{Array{U,1},1}) where {T <: Real, U <:Integer}
-    α_mixt = Array{Array{T,1},1}(undef, length(Λ))
+# function create_dirichlet_mixture(α::Array{T, 1}, Λ::Array{Array{U,1},1}) where {T <: Real, U <:Integer}
+function create_dirichlet_mixture(α::Array{T, 1}, Λ) where {T <: Real}
+        α_mixt = Array{Array{T,1},1}(undef, length(Λ))
     for i in eachindex(Λ)
         α_mixt[i] = α .+ Λ[i]
     end
     return α_mixt
 end
 
-create_dirichlet_mixture_parameters = create_dirichlet_mixture #alis for consistency with CIR
+create_dirichlet_mixture_parameters = create_dirichlet_mixture #alias for consistency with CIR
+
+function create_dirichlet_mixture_pdf(α, Λ, wms)
+    return x -> sum(wms.*Float64[pdf(Dirichlet(α .+ m), x) for m in Λ])
+end
+
+function create_dirichlet_mixture_marginals_pdf(α, Λ, wms)
+    return x -> sum(wms.*Vector{Float64}[pdf.([Beta(α[i] + m[i], sum(α[1:end .!= i] .+ m[1:end .!= i])) for i in eachindex(m)], Ref(x)) for m in Λ])
+end
 
 function get_quantiles_from_mass(mass)
     qinf = 0.5*(1-mass)
@@ -162,12 +179,21 @@ function get_quantiles_from_mass(mass)
 end
 
 function create_Gamma_mixture_density(δ, θ, Λ, wms)
-    #use 1/θ because of the way the Gamma distribution is parameterised in Julia Distributions.jl
+    #use 1/θ because of the way the Gamma distribution is parametrised in Julia Distributions.jl
     return x -> sum(wms.*Float64[pdf(Gamma(δ/2 + m, 1/θ),x) for m in Λ])
 end
 
 function compute_quantile_mixture_hpi(δ, θ, Λ, wms, q::Float64)
-    #use 1/θ because of the way the Gamma distribution is parameterised in Julia Distributions.jl
+    #use 1/θ because of the way the Gamma distribution is parametrised in Julia Distributions.jl
     f = x -> sum(wms.*Float64[cdf(Gamma(δ/2 + m, 1/θ),x) for m in Λ])
     return fzero(x -> f(x)-q, 0, 10^9)
+end
+
+function sample_from_Dirichlet_mixture(α, Λ, wms, n)
+    latent_mixture_idx = rand(Categorical(wms))
+    return rand(Dirichlet(α + Λ[latent_mixture_idx]), n)
+end
+function sample_from_Dirichlet_mixture(α, Λ, wms)
+    latent_mixture_idx = rand(Categorical(wms))
+    return rand(Dirichlet(α + Λ[latent_mixture_idx]))
 end

@@ -80,7 +80,7 @@ function create_gamma_kde_mixture_parameters(smp::Array{T,1}) where T <: Real
 end
 
 
-function create_gamma_mixture_density_αβ(α_list::AbstractArray{T,1}, β_list::AbstractArray{U,1}, wms::AbstractArray{V,1}) where {T <: Real, U <: Real, V <: Real}
+function create_Gamma_mixture_density_αβ(α_list::AbstractArray{T,1}, β_list::AbstractArray{U,1}, wms::AbstractArray{V,1}) where {T <: Real, U <: Real, V <: Real}
     #use 1/θ because of the way the Gamma distribution is parameterised in Julia Distributions.jl
     function res(x::Real)
         sum(wms[i] * pdf(Gamma(α_list[i], 1/β_list[i]), x) for i in eachindex(wms))
@@ -88,9 +88,17 @@ function create_gamma_mixture_density_αβ(α_list::AbstractArray{T,1}, β_list:
     return res
 end
 
+function create_Gamma_mixture_density_smp(smp::Array{T,1}) where T <: Real
+    α_list, β_list = create_gamma_kde_mixture_parameters(smp)
+
+    w = 1. / length(α_list)
+    wms = repeat([w], length(α_list))
+
+    return create_Gamma_mixture_density_αβ(α_list, β_list, wms)
+end
 
 """
-    create_gamma_kde_mixture_parameters(xdata::RealMatrix)
+create_Dirichlet_kde_mixture_parameters(xdata::RealMatrix)
 
 This is using Aitchison, J., & Lauder, I. J. (1985). Kernel density estimation for compositional data. Applied Statistics, 129–137.
 Optimal bandwidth selection is performed using a likelihood criterion, as in the article, which may not be the best choice.

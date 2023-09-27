@@ -353,21 +353,21 @@ end
 
 # ############### Bootstrap particle prediction
 
-# function WF_particle_boostrap_prediction_step(wms, Λ::Array{Array{Int64,1},1}, t, α; nparts = 1000) 
+function WF_particle_boostrap_prediction_step(wms, Λ::Array{Array{Int64,1},1}, t, α; nparts = 1000) 
 
 
-#     particles = sample_from_Dirichlet_mixture(α, Λ, wms, nparts)
+    particles = sample_from_Dirichlet_mixture(α, Λ, wms, nparts)
 
-#     sα = sum(α)
+    sα = sum(α)
 
-#     for i in 1:nparts
-#         particles[:,i] = Wright_Fisher_K_dim_transition_with_t005_approx(particles[:,i], t, α, sα)
-#         # println(i)
-#     end
+    for i in 1:nparts
+        particles[:,i] = Wright_Fisher_K_dim_transition_with_t005_approx(particles[:,i], t, α, sα)
+        # println(i)
+    end
 
-#     return particles
+    return particles
 
-# end
+end
 
 
 

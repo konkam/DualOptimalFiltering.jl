@@ -100,74 +100,74 @@ function WF_particle_integrated_PD_prediction_step(wms::Array{Ty,1}, sα, Λ::Ar
 
 end
 
-# function WF_particle_gillespie_PD_prediction_step(wms, sα, Λ::Array{Array{Int64,1},1}, t; nparts = 1000) 
+function WF_particle_gillespie_PD_prediction_step(wms, sα, Λ::Array{Array{Int64,1},1}, t; nparts = 1000) 
 
-#     Λ_wms_prime = Dict{Array{Int64,1}, Float64}()
+    Λ_wms_prime = Dict{Array{Int64,1}, Float64}()
 
-#     for i in 1:nparts
-#         # println("At step $i Λ_wms_prime is $Λ_wms_prime")
-#         # m = StatsBase.sample(Λ, Weights(wms))
-#         m = Λ[rand(Categorical(Weights(wms)))]
+    for i in 1:nparts
+        # println("At step $i Λ_wms_prime is $Λ_wms_prime")
+        # m = StatsBase.sample(Λ, Weights(wms))
+        m = Λ[rand(Categorical(Weights(wms)))]
 
-#         if sum(m) == 0
-#             n = m
-#         else
-#             n = WF_particle_gillespie_PD_prediction_step_for_one_m(m, sα, t)
-#         end
+        if sum(m) == 0
+            n = m
+        else
+            n = WF_particle_gillespie_PD_prediction_step_for_one_m(m, sα, t)
+        end
 
-#         # println("At step $i and n is $n")
-#         # println("haskey(Λ_wms_prime, n) ? $(haskey(Λ_wms_prime, n))")
+        # println("At step $i and n is $n")
+        # println("haskey(Λ_wms_prime, n) ? $(haskey(Λ_wms_prime, n))")
 
 
-#         if haskey(Λ_wms_prime, n)
-#             # println("already has this value ($n)")
-#             # println("Before, was $Λ_wms_prime")
-#             Λ_wms_prime[n] += 1/nparts
-#             # println("Now, is $Λ_wms_prime")
-#         else
-#             Λ_wms_prime[n] = 1/nparts
-#         end
-#     end
+        if haskey(Λ_wms_prime, n)
+            # println("already has this value ($n)")
+            # println("Before, was $Λ_wms_prime")
+            Λ_wms_prime[n] += 1/nparts
+            # println("Now, is $Λ_wms_prime")
+        else
+            Λ_wms_prime[n] = 1/nparts
+        end
+    end
 
-#     Λ_prime = keys(Λ_wms_prime) |> collect
-#     # println(Λ_wms_prime)
-#     sw = Λ_wms_prime |> values |> sum
-#     return Λ_prime, Float64[Λ_wms_prime[m]/sw for m in Λ_prime]
-# end
+    Λ_prime = keys(Λ_wms_prime) |> collect
+    # println(Λ_wms_prime)
+    sw = Λ_wms_prime |> values |> sum
+    return Λ_prime, Float64[Λ_wms_prime[m]/sw for m in Λ_prime]
+end
 
-# function WF_particle_gillespie_PD_prediction_step_for_one_m(m, sα, Δt) 
+function WF_particle_gillespie_PD_prediction_step_for_one_m(m, sα, Δt) 
 
     
-#     sm = sum(m)
+    sm = sum(m)
 
-#     if sm == 0
-#         return m
-#     else
-#         state = deepcopy(m) # was mutating m
+    if sm == 0
+        return m
+    else
+        state = deepcopy(m) # was mutating m
 
-#         sumstate = sum(state)
+        sumstate = sum(state)
 
-#         event_rate = sumstate*(sα+sumstate-1)/2
+        event_rate = sumstate*(sα+sumstate-1)/2
 
-#         # initialisation
-#         t = rand(Exponential(1/event_rate)) #Double check
+        # initialisation
+        t = rand(Exponential(1/event_rate)) #Double check
     
-#         # simulation
-#         while t < Δt && sum(state) > 0
-#             # println(t)
-#             # println(state ./ sum(state))
-#             j = rand(Categorical(state ./ sum(state)))
-#             state[j] -= 1
-#             sumstate -= 1
-#             event_rate = sumstate*(sα+sumstate-1)/2
-#             δt = rand(Exponential(1/event_rate)) # The exponential distribution use the scale parametrisation
-#             t += δt
-#             #println("t = $t, state = $state")
-#         end
-#         return state
-#     end
+        # simulation
+        while t < Δt && sum(state) > 0
+            # println(t)
+            # println(state ./ sum(state))
+            j = rand(Categorical(state ./ sum(state)))
+            state[j] -= 1
+            sumstate -= 1
+            event_rate = sumstate*(sα+sumstate-1)/2
+            δt = rand(Exponential(1/event_rate)) # The exponential distribution use the scale parametrisation
+            t += δt
+            #println("t = $t, state = $state")
+        end
+        return state
+    end
 
-# end
+end
 
 # ## This is an alternative version to WF_particle_integrated_PD_prediction_step which seems 5 times faster
 # function WF_neutral_particle_prediction_step_precomputed(wms, sα, Λ, Δt, precomputed_log_ν, precomputed_log_Cmmi, precomputed_log_binomial_coeff; nparts=1000)

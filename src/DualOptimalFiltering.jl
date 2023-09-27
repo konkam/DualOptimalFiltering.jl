@@ -39,6 +39,6 @@ include("CIR_particle_approximations.jl")
 #include("MC_approx_WF_selection.jl")
 #include("MC_approx_WF_neutral.jl")
 
-#include("Neutral_WF_particle_approximations.jl")
+include("Neutral_WF_particle_approximations.jl")
 
 end # module

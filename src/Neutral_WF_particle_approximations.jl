@@ -220,11 +220,11 @@ end
 # ##################### Birth-Death duality particle approximation
 
 
-# function WF_neutral_particle_prediction_step_BD_Dual_Moran_gillespie(wms, Λ, Δt, α; nparts=1000)
+function WF_neutral_particle_prediction_step_BD_Dual_Moran_gillespie(wms, Λ, Δt, α; nparts=1000)
 
-#     particle_prediction_step_WF(wms, Λ, Δt, α, moran_simulation_Gillespie; nparts=nparts)
+    particle_prediction_step_WF(wms, Λ, Δt, α, moran_simulation_Gillespie; nparts=nparts)
         
-# end
+end
 
 # function WF_neutral_particle_prediction_step_BD_Dual_WF_gillespie(wms, Λ, Δt, α; nparts=1000)
 
@@ -239,64 +239,64 @@ end
 # end
 
 
-# function particle_prediction_step_WF(wms, Λ, Δt, α, prediction_function; nparts=1000)
+function particle_prediction_step_WF(wms, Λ, Δt, α, prediction_function; nparts=1000)
 
     
-#     particle_sample = StatsBase.sample(Λ, Weights(wms), nparts) #|>
-#                         # x -> Tuple.(x)
+    particle_sample = StatsBase.sample(Λ, Weights(wms), nparts) #|>
+                        # x -> Tuple.(x)
 
-#     for i in eachindex(particle_sample)
-#         particle_sample[i] = prediction_function(particle_sample[i], Δt, α)
-#     end
+    for i in eachindex(particle_sample)
+        particle_sample[i] = prediction_function(particle_sample[i], Δt, α)
+    end
 
-#     res = DataStructures.counter(particle_sample)
+    res = DataStructures.counter(particle_sample)
 
-#     ks = keys(res) |> collect
+    ks = keys(res) |> collect
 
-#     return ks, [res[k]/nparts for k in ks]
+    return ks, [res[k]/nparts for k in ks]
     
-# end
+end
 
-# function moran_simulation_Gillespie(starting_point, Δt, α)
-#     #K = length(starting_point)
-#     N = sum(starting_point)
-#     if N == 0
-#         return starting_point
-#     else
-#         θ = sum(α)
-#         event_rate = 1/2*N*(θ+N)
+function moran_simulation_Gillespie(starting_point, Δt, α)
+    #K = length(starting_point)
+    N = sum(starting_point)
+    if N == 0
+        return starting_point
+    else
+        θ = sum(α)
+        event_rate = 1/2*N*(θ+N)
 
-#         # initialisation
-#         t = rand(Exponential(1/event_rate)) #The exponential distribution use the scale parametrisation
-#         state = deepcopy(starting_point)
+        # initialisation
+        t = rand(Exponential(1/event_rate)) #The exponential distribution use the scale parametrisation
+        state = deepcopy(starting_point)
 
-#         while t < Δt
-#             i, j = choose_event(state, α, θ, N)
-#             state[i] -= 1
-#             state[j] += 1
-#             δt = rand(Exponential(1/event_rate)) #The exponential distribution use the scale parametrisation
-#             t += δt
-#             #println("t = $t, state = $state")
-#         end
-#         return state
-#     end
-# end
+        while t < Δt
+            i, j = choose_event(state, α, θ, N)
+            state[i] -= 1
+            state[j] += 1
+            δt = rand(Exponential(1/event_rate)) #The exponential distribution use the scale parametrisation
+            t += δt
+            #println("t = $t, state = $state")
+        end
+        return state
+    end
+end
 
-# function choose_event(state, α, θ, N)
-#     # an event can be coded as a pair i,j
-#     K = length(α)
-#     p = 0
-#     u = rand(Uniform(0,1))
-#     @inbounds for i in 1:K
-#         for j in 1:K
-#             p += state[i]*(α[j]+state[j])/(N*(θ+N))
-#             if p ≥ u
-#                 return i,j
-#             end
-#         end
-#     end
-#     return 0, 0
-# end
+function choose_event(state, α, θ, N)
+    # an event can be coded as a pair i,j
+    K = length(α)
+    p = 0
+    u = rand(Uniform(0,1))
+    @inbounds for i in 1:K
+        for j in 1:K
+            p += state[i]*(α[j]+state[j])/(N*(θ+N))
+            if p ≥ u
+                return i,j
+            end
+        end
+    end
+    return 0, 0
+end
 
 
 # function WF_discrete_Gillespie(starting_point, Δt, α)

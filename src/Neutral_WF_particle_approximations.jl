@@ -394,43 +394,43 @@ end
 
 
 
-# function filter_WF_particle_approx(α, data, predict_function::Function; silence = false, trim0 = false, nparts=1000)
+function filter_WF_particle_approx(α, data, predict_function::Function; silence = false, trim0 = false, nparts=1000)
 
-#     @assert length(α) == length(data[data |> keys |> first])
+    @assert length(α) == length(data[data |> keys |> first])
 
-#     sα = sum(α)
-#     times = keys(data) |> collect |> sort
-#     Λ_of_t = Dict()
-#     wms_of_t = Dict()
+    sα = sum(α)
+    times = keys(data) |> collect |> sort
+    Λ_of_t = Dict()
+    wms_of_t = Dict()
 
-#     filtered_Λ, filtered_wms = update_WF_params([1.], α, [repeat([0], inner = length(α))], data[times[1]])
+    filtered_Λ, filtered_wms = update_WF_params([1.], α, [repeat([0], inner = length(α))], data[times[1]])
     
-#     if trim0
-#         mask = filtered_wms.>0
-#         filtered_Λ, filtered_wms = filtered_Λ[mask], filtered_wms[mask]
-#     end
+    if trim0
+        mask = filtered_wms.>0
+        filtered_Λ, filtered_wms = filtered_Λ[mask], filtered_wms[mask]
+    end
 
-#     Λ_of_t[times[1]] = filtered_Λ
-#     wms_of_t[times[1]] = filtered_wms
+    Λ_of_t[times[1]] = filtered_Λ
+    wms_of_t[times[1]] = filtered_wms
 
-#     for k in 1:(length(times)-1)
-#         if (!silence)
-#             println("Step index: $k")
-#             println("Number of components: $(length(filtered_Λ))")
-#         end
+    for k in 1:(length(times)-1)
+        if (!silence)
+            println("Step index: $k")
+            println("Number of components: $(length(filtered_Λ))")
+        end
 
-#         filtered_Λ, filtered_wms = get_next_filtering_distribution_WF_particle_approx(filtered_Λ, filtered_wms, times[k], times[k+1], α, sα, data[times[k+1]], predict_function; nparts=nparts)
-#         if trim0 #Should be useless, components with weight 0 should disappear after sampling
-#             mask = filtered_wms.>0
-#             filtered_Λ, filtered_wms = filtered_Λ[mask], filtered_wms[mask]
-#         end
-#         Λ_of_t[times[k+1]] = filtered_Λ
-#         wms_of_t[times[k+1]] = filtered_wms
-#     end
+        filtered_Λ, filtered_wms = get_next_filtering_distribution_WF_particle_approx(filtered_Λ, filtered_wms, times[k], times[k+1], α, sα, data[times[k+1]], predict_function; nparts=nparts)
+        if trim0 #Should be useless, components with weight 0 should disappear after sampling
+            mask = filtered_wms.>0
+            filtered_Λ, filtered_wms = filtered_Λ[mask], filtered_wms[mask]
+        end
+        Λ_of_t[times[k+1]] = filtered_Λ
+        wms_of_t[times[k+1]] = filtered_wms
+    end
 
-#     return Λ_of_t, wms_of_t
+    return Λ_of_t, wms_of_t
 
-# end
+end
 
 # function filter_WF_particle_approx_adaptive_precomputation_ar(α, data, predict_function_precomputed::Function; silence = false, return_precomputed_terms = false, trim0 = false, nparts=1000)
 #     # println("filter_WF_mem2")

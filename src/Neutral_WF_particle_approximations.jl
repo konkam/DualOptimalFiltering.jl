@@ -383,14 +383,14 @@ function get_next_filtering_distribution_WF_particle_approx(current_Λ, current_
 end
 
 
-# function get_next_filtering_distribution_WF_particle_approx_precomputed(current_Λ, current_wms, current_time, next_time, α, sα, next_y, predict_function_precomputed, precomputed_log_ν, precomputed_log_Cmmi, precomputed_log_binomial_coeff; nparts=1000)
+function get_next_filtering_distribution_WF_particle_approx_precomputed(current_Λ, current_wms, current_time, next_time, α, sα, next_y, predict_function_precomputed, precomputed_log_ν, precomputed_log_Cmmi, precomputed_log_binomial_coeff; nparts=1000)
     
-#     predicted_Λ, predicted_wms = predict_function_precomputed(current_wms, current_Λ, next_time-current_time, α, sα, precomputed_log_ν, precomputed_log_Cmmi, precomputed_log_binomial_coeff; nparts = nparts)
+    predicted_Λ, predicted_wms = predict_function_precomputed(current_wms, current_Λ, next_time-current_time, α, sα, precomputed_log_ν, precomputed_log_Cmmi, precomputed_log_binomial_coeff; nparts = nparts)
     
-#     filtered_Λ, filtered_wms = update_WF_params(predicted_wms, α, predicted_Λ, next_y)
+    filtered_Λ, filtered_wms = update_WF_params(predicted_wms, α, predicted_Λ, next_y)
 
-#     return filtered_Λ, filtered_wms
-# end
+    return filtered_Λ, filtered_wms
+end
 
 
 
@@ -432,59 +432,59 @@ function filter_WF_particle_approx(α, data, predict_function::Function; silence
 
 end
 
-# function filter_WF_particle_approx_adaptive_precomputation_ar(α, data, predict_function_precomputed::Function; silence = false, return_precomputed_terms = false, trim0 = false, nparts=1000)
-#     # println("filter_WF_mem2")
+function filter_WF_particle_approx_adaptive_precomputation_ar(α, data, predict_function_precomputed::Function; silence = false, return_precomputed_terms = false, trim0 = false, nparts=1000)
+    # println("filter_WF_mem2")
 
-#     # @assert length(α) == length(data[collect(keys(data))[1]])
-#     # println("$α, $(length(data[data |> keys |> first]))")
-#     @assert length(α) == length(data[data |> keys |> first])
-#     Δt = assert_constant_time_step_and_compute_it(data)
+    # @assert length(α) == length(data[collect(keys(data))[1]])
+    # println("$α, $(length(data[data |> keys |> first]))")
+    @assert length(α) == length(data[data |> keys |> first])
+    Δt = assert_constant_time_step_and_compute_it(data)
 
-#     smmax = values(data) |> sum |> sum
-#     log_ν_ar = Array{Float64}(undef, smmax, smmax)
-#     log_Cmmi_ar = Array{Float64}(undef, smmax, smmax)
-#     log_binomial_coeff_ar_offset = Array{Float64}(undef,    smmax+1, smmax+1)
+    smmax = values(data) |> sum |> sum
+    log_ν_ar = Array{Float64}(undef, smmax, smmax)
+    log_Cmmi_ar = Array{Float64}(undef, smmax, smmax)
+    log_binomial_coeff_ar_offset = Array{Float64}(undef,    smmax+1, smmax+1)
 
-#     sα = sum(α)
-#     times = keys(data) |> collect |> sort
-#     Λ_of_t = Dict()
-#     wms_of_t = Dict()
+    sα = sum(α)
+    times = keys(data) |> collect |> sort
+    Λ_of_t = Dict()
+    wms_of_t = Dict()
 
-#     filtered_Λ, filtered_wms = update_WF_params([1.], α, [repeat([0], inner = length(α))], data[times[1]])
+    filtered_Λ, filtered_wms = update_WF_params([1.], α, [repeat([0], inner = length(α))], data[times[1]])
 
-#     if trim0
-#         mask = filtered_wms.>0
-#         filtered_Λ, filtered_wms = filtered_Λ[mask], filtered_wms[mask]
-#     end
+    if trim0
+        mask = filtered_wms.>0
+        filtered_Λ, filtered_wms = filtered_Λ[mask], filtered_wms[mask]
+    end
 
-#     Λ_of_t[times[1]] = filtered_Λ
-#     wms_of_t[times[1]] = filtered_wms
-#     new_sm_max = maximum(sum.(filtered_Λ))
-#     precompute_next_terms_ar!(0, new_sm_max, log_ν_ar, log_Cmmi_ar, log_binomial_coeff_ar_offset, sα, Δt)
-#     sm_max_so_far = new_sm_max
+    Λ_of_t[times[1]] = filtered_Λ
+    wms_of_t[times[1]] = filtered_wms
+    new_sm_max = maximum(sum.(filtered_Λ))
+    precompute_next_terms_ar!(0, new_sm_max, log_ν_ar, log_Cmmi_ar, log_binomial_coeff_ar_offset, sα, Δt)
+    sm_max_so_far = new_sm_max
 
-#     for k in 1:(length(times)-1)
-#         if (!silence)
-#             println("Step index: $k")
-#             println("Number of components: $(length(filtered_Λ))")
-#         end
-#         last_sm_max = maximum(sum.(filtered_Λ))
-#         new_sm_max = last_sm_max + sum(data[times[k+1]])
+    for k in 1:(length(times)-1)
+        if (!silence)
+            println("Step index: $k")
+            println("Number of components: $(length(filtered_Λ))")
+        end
+        last_sm_max = maximum(sum.(filtered_Λ))
+        new_sm_max = last_sm_max + sum(data[times[k+1]])
 
-#         if sm_max_so_far < new_sm_max
-#             precompute_next_terms_ar!(sm_max_so_far, new_sm_max, log_ν_ar, log_Cmmi_ar, log_binomial_coeff_ar_offset, sα, Δt)
-#             sm_max_so_far = max(sm_max_so_far,new_sm_max)
-#         end
+        if sm_max_so_far < new_sm_max
+            precompute_next_terms_ar!(sm_max_so_far, new_sm_max, log_ν_ar, log_Cmmi_ar, log_binomial_coeff_ar_offset, sα, Δt)
+            sm_max_so_far = max(sm_max_so_far,new_sm_max)
+        end
 
-#         filtered_Λ, filtered_wms = get_next_filtering_distribution_WF_particle_approx_precomputed(filtered_Λ, filtered_wms, times[k], times[k+1], α, sα, data[times[k+1]], predict_function_precomputed, log_ν_ar, log_Cmmi_ar, log_binomial_coeff_ar_offset; nparts = nparts)
-#         Λ_of_t[times[k+1]] = filtered_Λ
-#         wms_of_t[times[k+1]] = filtered_wms
-#     end
+        filtered_Λ, filtered_wms = get_next_filtering_distribution_WF_particle_approx_precomputed(filtered_Λ, filtered_wms, times[k], times[k+1], α, sα, data[times[k+1]], predict_function_precomputed, log_ν_ar, log_Cmmi_ar, log_binomial_coeff_ar_offset; nparts = nparts)
+        Λ_of_t[times[k+1]] = filtered_Λ
+        wms_of_t[times[k+1]] = filtered_wms
+    end
 
-#     if return_precomputed_terms
-#         return Λ_of_t, wms_of_t, log_ν_ar, log_Cmmi_ar, log_binomial_coeff_ar_offset, sm_max_so_far
-#     else
-#         return Λ_of_t, wms_of_t
-#     end
+    if return_precomputed_terms
+        return Λ_of_t, wms_of_t, log_ν_ar, log_Cmmi_ar, log_binomial_coeff_ar_offset, sm_max_so_far
+    else
+        return Λ_of_t, wms_of_t
+    end
 
-# end
+end

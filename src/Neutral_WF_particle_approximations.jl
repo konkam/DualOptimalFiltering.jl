@@ -226,17 +226,17 @@ function WF_neutral_particle_prediction_step_BD_Dual_Moran_gillespie(wms, Λ, Δ
         
 end
 
-# function WF_neutral_particle_prediction_step_BD_Dual_WF_gillespie(wms, Λ, Δt, α; nparts=1000)
+function WF_neutral_particle_prediction_step_BD_Dual_WF_gillespie(wms, Λ, Δt, α; nparts=1000)
 
-#     particle_prediction_step_WF(wms, Λ, Δt, α, WF_discrete_Gillespie; nparts=nparts)
+    particle_prediction_step_WF(wms, Λ, Δt, α, WF_discrete_Gillespie; nparts=nparts)
         
-# end
+end
 
-# function WF_neutral_particle_prediction_step_BD_Dual_WF_diffusion(wms, Λ, Δt, α; nparts=1000)
+function WF_neutral_particle_prediction_step_BD_Dual_WF_diffusion(wms, Λ, Δt, α; nparts=1000)
 
-#     particle_prediction_step_WF(wms, Λ, Δt, α, WF_simulation_diffusion; nparts=nparts)
+    particle_prediction_step_WF(wms, Λ, Δt, α, WF_simulation_diffusion; nparts=nparts)
     
-# end
+end
 
 
 function particle_prediction_step_WF(wms, Λ, Δt, α, prediction_function; nparts=1000)
@@ -299,50 +299,50 @@ function choose_event(state, α, θ, N)
 end
 
 
-# function WF_discrete_Gillespie(starting_point, Δt, α)
-#     N = sum(starting_point)
-#     if N == 0
-#         return starting_point
-#     else
-#         θ = sum(α)
-#         k = length(α)
+function WF_discrete_Gillespie(starting_point, Δt, α)
+    N = sum(starting_point)
+    if N == 0
+        return starting_point
+    else
+        θ = sum(α)
+        k = length(α)
 
-#         # Build mutation matrix for WF
-#         Γ = repeat(α./(2*N), 1,k)' 
-#         for i in 1:k
-#             Γ[i,i] = 1 - sum(α./(2*N)) + α[i]/(2*N)
-#         end
+        # Build mutation matrix for WF
+        Γ = repeat(α./(2*N), 1,k)' 
+        for i in 1:k
+            Γ[i,i] = 1 - sum(α./(2*N)) + α[i]/(2*N)
+        end
 
-#         # Particle propagation
-#         m = starting_point
-#         for u in 1:floor(Int64, Δt * (N+θ))
-#             m = vec(rand(Multinomial(N, Γ'*(m./N)),1))
-#         end
-#         return m
-#     end
-# end
-
-
-# function from_simplex_to_M_space(x::Vector{Float64}, N)
-#     x *= N
-#     rest = 0.0
-#     for (index, el) in enumerate(x)
-#         x[index] = round(el + rest)
-#         rest += (el - x[index])
-#     end
-#     return convert(Vector{Int64}, x)
-# end
+        # Particle propagation
+        m = starting_point
+        for u in 1:floor(Int64, Δt * (N+θ))
+            m = vec(rand(Multinomial(N, Γ'*(m./N)),1))
+        end
+        return m
+    end
+end
 
 
-# function WF_simulation_diffusion(starting_point, Δt, α)
-#     N = sum(starting_point)
-#     if N == 0
-#         return starting_point
-#     else
-#         Δt = convert(Float64, Δt)
-#         return from_simplex_to_M_space(Wright_Fisher_K_dim_trajectory_with_t005_approx(starting_point./N, [Δt], α)[:, 2], N)
-#     end
-# end
+function from_simplex_to_M_space(x::Vector{Float64}, N)
+    x *= N
+    rest = 0.0
+    for (index, el) in enumerate(x)
+        x[index] = round(el + rest)
+        rest += (el - x[index])
+    end
+    return convert(Vector{Int64}, x)
+end
+
+
+function WF_simulation_diffusion(starting_point, Δt, α)
+    N = sum(starting_point)
+    if N == 0
+        return starting_point
+    else
+        Δt = convert(Float64, Δt)
+        return from_simplex_to_M_space(Wright_Fisher_K_dim_trajectory_with_t005_approx(starting_point./N, [Δt], α)[:, 2], N)
+    end
+end
 
 
 # function random_simplex_point(k)

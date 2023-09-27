@@ -373,14 +373,14 @@ end
 
 # ################ Particle approximate filtering functions
 
-# function get_next_filtering_distribution_WF_particle_approx(current_Λ, current_wms, current_time, next_time, α, sα, next_y, predict_function; nparts=1000)
+function get_next_filtering_distribution_WF_particle_approx(current_Λ, current_wms, current_time, next_time, α, sα, next_y, predict_function; nparts=1000)
 
-#     predicted_Λ, predicted_wms = predict_function(current_wms, current_Λ, next_time-current_time, α, sα; nparts = nparts)
+    predicted_Λ, predicted_wms = predict_function(current_wms, current_Λ, next_time-current_time, α, sα; nparts = nparts)
     
-#     filtered_Λ, filtered_wms = update_WF_params(predicted_wms, α, predicted_Λ, next_y)
+    filtered_Λ, filtered_wms = update_WF_params(predicted_wms, α, predicted_Λ, next_y)
 
-#     return filtered_Λ, filtered_wms
-# end
+    return filtered_Λ, filtered_wms
+end
 
 
 # function get_next_filtering_distribution_WF_particle_approx_precomputed(current_Λ, current_wms, current_time, next_time, α, sα, next_y, predict_function_precomputed, precomputed_log_ν, precomputed_log_Cmmi, precomputed_log_binomial_coeff; nparts=1000)

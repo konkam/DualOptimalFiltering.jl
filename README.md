@@ -19,11 +19,11 @@ We provide examples on the Cox-Ingersoll-Ross model with Poisson distributed dat
 
 The algorithms in this package are presented in:
 
- Guillaume Kon Kam King, Omiros Papaspiliopoulos, and Matteo Ruggiero. "Exact inference for a class of hidden Markov models on general state spaces." Electronic Journal of Statistics 15.1 (2021): 2832-2875.
+[Guillaume Kon Kam King, Omiros Papaspiliopoulos, and Matteo Ruggiero. "Exact inference for a class of hidden Markov models on general state spaces." Electronic Journal of Statistics 15.1 (2021): 2832-2875.](https://projecteuclid.org/journals/electronic-journal-of-statistics/volume-15/issue-1/Exact-inference-for-a-class-of-hidden-Markov-models-on/10.1214/21-EJS1841.full)
 
- and in:
+ and:
 
- Kon Kam King, G., Pandolfi, A., Piretto, M., and Ruggiero, M., “Approximate filtering via discrete dual processes”, arXiv e-prints, 2023. doi:10.48550/arXiv.2310.00599.
+ [Kon Kam King, G., Pandolfi, A., Piretto, M., and Ruggiero, M., “Approximate filtering via discrete dual processes”, arXiv e-prints, 2023. doi:10.48550/arXiv.2310.00599.](https://arxiv.org/abs/2310.00599)
 
 ## Installation
 

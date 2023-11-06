@@ -189,6 +189,12 @@ function compute_quantile_mixture_hpi(δ, θ, Λ, wms, q::Float64)
     return fzero(x -> f(x)-q, 0, 10^9)
 end
 
+function compute_quantile_mixture_beta(α, Λ, wms, q::Float64; marginal = 1)
+    #use 1/θ because of the way the Gamma distribution is parametrised in Julia Distributions.jl
+    f = x -> sum(wms.*Float64[cdf(Beta(α[marginal] + m[marginal], sum(α[1:end .!= marginal] .+ m[1:end .!= marginal])),x) for m in Λ])
+    return fzero(x -> f(x)-q, 0, 1)
+end
+
 function sample_from_Dirichlet_mixture(α, Λ, wms, n)
     latent_mixture_idx = rand(Categorical(wms))
     return rand(Dirichlet(α + Λ[latent_mixture_idx]), n)

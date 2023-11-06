@@ -22,5 +22,8 @@ using Distributions
     @test isreal(sum(DualOptimalFiltering.sample_from_Dirichlet_mixture([2.5, 3.5, 2.5], [[1,2,1], [1,2,1], [1,2,1]], [1/3, 1/3, 1/3])))
 
     @test mean(DualOptimalFiltering.sample_from_Dirichlet_mixture([2.5, 2.5, 2.5], [[1,2,1], [1,2,1], [1,2,1]], [1/3, 1/3, 1/3], 10000000), dims = 2) ≈ (([2.5, 2.5, 2.5] + [1,2,1]) |> x -> x/sum(x))  atol=10^(-4)
+
+    @test DualOptimalFiltering.compute_quantile_mixture_beta([1.5, 1.5, 1.5], [[0,0,0], [0,0,0], [0,0,0]], [1/3, 1/3, 1/3], 0.5; marginal = 1)
+    0.30694725577120113 ≈ quantile(Beta(1.5, 3), 0.5)
     
 end

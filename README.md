@@ -1,25 +1,36 @@
+---
+author: "Guillaume KON KAM KING"
+title: "Weave README"
+---
+
+
+
 [![Coverage Status](https://coveralls.io/repos/github/konkam/DualOptimalFiltering.jl/badge.svg?branch=master)](https://coveralls.io/github/konkam/DualOptimalFiltering.jl?branch=master)
 [![codecov](https://codecov.io/gh/konkam/DualOptimalFiltering.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/konkam/DualOptimalFiltering.jl)
 [![Build Status](https://travis-ci.org/konkam/DualOptimalFiltering.jl.svg?branch=master)](https://travis-ci.org/konkam/DualOptimalFiltering.jl.svg?branch=master)
 
 # DualOptimalFiltering
 
-Optimal filtering, smoothing and general inference using a dual process.
+Optimal filtering, smoothing, and general inference using a dual process.
 
 
-This package provides a set of functions to perform exact optimal filtering, smoothing or general inference using a dual process.
-We provide examples on the Cox-Ingersoll-Ross model with Poisson distributed data and the Wright-Fisher model with multinomial distributed data.
+This package provides a set of functions to perform exact optimal filtering, smoothing, or general inference using a dual process. Several approximation strategies are also implemented.
+We provide examples on the Cox-Ingersoll-Ross model with Poisson distributed data and on the Wright-Fisher model with multinomial distributed data.
 
-This package may be used to reproduce the results from the article: [Guillaume Kon Kam King, Omiros Papaspiliopoulos, and Matteo Ruggiero. "Exact inference for a class of hidden Markov models on general state spaces." Electronic Journal of Statistics 15.1 (2021): 2832-2875.](https://projecteuclid.org/journals/electronic-journal-of-statistics/volume-15/issue-1/Exact-inference-for-a-class-of-hidden-Markov-models-on/10.1214/21-EJS1841.full)
+The algorithms in this package are presented in:
 
-The concept and the implementation are described therein.
+ Guillaume Kon Kam King, Omiros Papaspiliopoulos, and Matteo Ruggiero. "Exact inference for a class of hidden Markov models on general state spaces." Electronic Journal of Statistics 15.1 (2021): 2832-2875.
+
+ and in:
+
+ Kon Kam King, G., Pandolfi, A., Piretto, M., and Ruggiero, M., “Approximate filtering via discrete dual processes”, arXiv e-prints, 2023. doi:10.48550/arXiv.2310.00599.
 
 ## Installation
-````julia
 
+```julia
 import Pkg
-Pkg.add(url="https://github.com/konkam/DualOptimalFiltering.jl")
-````
+Pkg.add("https://github.com/konkam/DualOptimalFiltering.jl")
+```
 
 
 
@@ -29,7 +40,7 @@ Pkg.add(url="https://github.com/konkam/DualOptimalFiltering.jl")
 
 #### Simulate some data
 
-````julia
+```julia
 using DualOptimalFiltering, Random, Distributions
 
 function simulate_CIR_data(;Nsteps_CIR = 50, Nobs = 5, δ = 3., γ = 2.5, σ = 4.)
@@ -46,31 +57,29 @@ function simulate_CIR_data(;Nsteps_CIR = 50, Nobs = 5, δ = 3., γ = 2.5, σ = 4
 end
 
 data_CIR, X_CIR,  δ, γ, σ, λ = simulate_CIR_data()
-````
+```
 
-
-````
-(Dict(0.495 => [4, 9, 7, 5, 5],0.517 => [2, 2, 0, 4, 7],0.011 => [4, 5, 4, 
-3, 4],0.32999999999999996 => [3, 5, 2, 2, 3],0.297 => [0, 2, 0, 2, 1],0.484
- => [8, 10, 6, 5, 5],0.022 => [1, 1, 2, 2, 1],0.418 => [0, 0, 2, 4, 1],0.34
-099999999999997 => [3, 3, 2, 2, 0],0.528 => [6, 1, 8, 6, 7]…), [3.0, 2.7564
-965319331467, 2.3880096847200876, 3.921167439497704, 9.30930170923265, 14.5
-14888921347417, 14.993362852522825, 17.192544278532573, 15.658780461278619,
- 9.335794822551398  …  5.79641237544099, 4.361014445690017, 5.2661303583857
-86, 4.366796112276612, 5.470119203373088, 4.093767074651879, 6.463104909420
-805, 3.6944492239067688, 4.69977297524652, 3.7518228017252353], 3.0, 2.5, 4
-.0, 1.0)
-````
+```
+(Dict(0.066 => [3, 4, 7, 10, 2], 0.495 => [3, 3, 4, 2, 3], 0.517 => [5, 5, 
+9, 7, 5], 0.0 => [2, 3, 3, 3, 2], 0.011 => [2, 3, 2, 2, 0], 0.044 => [4, 10
+, 4, 7, 4], 0.32999999999999996 => [8, 5, 3, 11, 3], 0.429 => [5, 5, 8, 4, 
+5], 0.297 => [2, 6, 6, 4, 4], 0.484 => [3, 4, 2, 1, 5]…), [3.0, 2.143688536
+6092575, 5.636996800109125, 7.970848341867707, 7.520739769358552, 5.1613203
+55005335, 4.449277195722735, 5.112513985330582, 2.087873323401826, 1.401834
+670577054  …  3.3969990970050365, 7.802843753312557, 5.347636270957629, 4.1
+49587545543895, 4.433627795081461, 3.561145886626744, 2.949889530858949, 4.
+374296960131622, 6.503125616716986, 3.6659309862002507], 3.0, 2.5, 4.0, 1.0
+)
+```
 
 
 
 
 #### Filter the data
 
-````julia
+```julia
 Λ_of_t_CIR, wms_of_t_CIR, θ_of_t_CIR = filter_CIR(δ, γ, σ, λ, data_CIR; silence = true);
-````
-
+```
 
 
 
@@ -80,7 +89,7 @@ data_CIR, X_CIR,  δ, γ, σ, λ = simulate_CIR_data()
 Filtering distribution, 95% credible band and true hidden signal:
 
 
-````julia
+```julia
 using Plots
 
 function plot_data_and_posterior_distribution2(δ, θ_of_t, Λ_of_t, wms_of_t, data, X_CIR)
@@ -103,7 +112,6 @@ function plot_data_and_posterior_distribution2(δ, θ_of_t, Λ_of_t, wms_of_t, d
 end
 
 pl = plot_data_and_posterior_distribution2(δ, θ_of_t_CIR, Λ_of_t_CIR, wms_of_t_CIR, data_CIR, X_CIR)
-````
-
+```
 
 ![](figures/README_4_1.png)

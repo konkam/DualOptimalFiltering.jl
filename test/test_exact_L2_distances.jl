@@ -30,16 +30,16 @@ using ExactWrightFisher
 
     time_grid = data |> keys |> collect |> sort
     logw1 = log.(wms_of_t[time_grid[20]])
-    αlist_1, βlist_1 = DualOptimalFiltering.create_gamma_mixture_parameters(δ, θ_of_t[time_grid[20]], Λ_of_t[time_grid[20]][isfinite.(logw1)])
+    αlist_1, βlist_1 = DualOptimalFiltering.create_Gamma_mixture_parameters(δ, θ_of_t[time_grid[20]], Λ_of_t[time_grid[20]][isfinite.(logw1)])
 
     logw2 = log.(wms_of_t1[time_grid[20]])
-    αlist_2, βlist_2 = DualOptimalFiltering.create_gamma_mixture_parameters(δ, θ_of_t1[time_grid[20]], Λ_of_t1[time_grid[20]])
+    αlist_2, βlist_2 = DualOptimalFiltering.create_Gamma_mixture_parameters(δ, θ_of_t1[time_grid[20]], Λ_of_t1[time_grid[20]])
 
     @test_nowarn DualOptimalFiltering.log_L2_dist_Gamma_mixtures(logw1[isfinite.(logw1)], αlist_1, βlist_1, logw2, αlist_2, βlist_2)
 
-    cc = DualOptimalFiltering.create_gamma_mixture_pdf(δ, θ_of_t[time_grid[20]], Λ_of_t[time_grid[20]][isfinite.(logw1)], wms_of_t[time_grid[20]][isfinite.(logw1)])
+    cc = DualOptimalFiltering.create_Gamma_mixture_pdf(δ, θ_of_t[time_grid[20]], Λ_of_t[time_grid[20]][isfinite.(logw1)], wms_of_t[time_grid[20]][isfinite.(logw1)])
 
-    cc1 = DualOptimalFiltering.create_gamma_mixture_pdf(δ, θ_of_t1[time_grid[20]], Λ_of_t1[time_grid[20]], wms_of_t1[time_grid[20]])
+    cc1 = DualOptimalFiltering.create_Gamma_mixture_pdf(δ, θ_of_t1[time_grid[20]], Λ_of_t1[time_grid[20]], wms_of_t1[time_grid[20]])
 
     # res = DualOptimalFiltering.L2_dist_1D(cc, cc1)
     # @test exp(DualOptimalFiltering.log_L2_dist_Gamma_mixtures(logw1[isfinite.(logw1)], αlist_1, βlist_1, logw2, αlist_2, βlist_2)) ≈ res[1] atol=res[2]

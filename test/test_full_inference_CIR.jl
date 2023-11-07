@@ -23,11 +23,11 @@ using ExactWrightFisher, Distributions
     prior_σ = truncated(Normal(5, 4), 0, Inf)
     prior_logpdf(δi, γi, σi) = logpdf(prior_δ, δi) + logpdf(prior_γ, γi) + logpdf(prior_σ, σi)
 
-    @test_nowarn DualOptimalFiltering.joint_sampler_CIR_pruning_precompute(data, λ, prior_logpdf, [1.,1.,1.], 10, (x, y) -> (x, y), final_chain_length = 10)
+    @test_nowarn DualOptimalFiltering.joint_sampler_CIR_pruning_precompute(data, λ, prior_logpdf, [1.,1.,1.], 10, (x, y) -> (x, y), final_chain_length = 10, silence = true)
 
-    @test_nowarn DualOptimalFiltering.joint_sampler_CIR_keep_fixed_number_precompute(data, λ, prior_logpdf, [1.,1.,1.], 10, 2; final_chain_length = 10)
+    @test_nowarn DualOptimalFiltering.joint_sampler_CIR_keep_fixed_number_precompute(data, λ, prior_logpdf, [1.,1.,1.], 10, 2; final_chain_length = 10, silence = true)
 
-    @test_nowarn DualOptimalFiltering.joint_sampler_CIR_reparam_keep_fixed_number_precompute(data, λ, prior_logpdf, 10, 2; final_chain_length = 10)
+    @test_nowarn DualOptimalFiltering.joint_sampler_CIR_reparam_keep_fixed_number_precompute(data, λ, prior_logpdf, 10, 2; final_chain_length = 10, silence = true)
 
 
 end;

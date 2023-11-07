@@ -68,9 +68,9 @@ function Jtnorm_create(starting_state)
 end
 
 
-function estimate_jumping_rule(length_pilot_run, starting_Jtnorm_create, starting_state, unnormalised_logposterior::Function; warmup_percentage = 0.5, print_optimal_jump_size = false)
+function estimate_jumping_rule(length_pilot_run, starting_Jtnorm_create, starting_state, unnormalised_logposterior::Function; warmup_percentage = 0.5, print_optimal_jump_size = false, silence = false)
 
-    mcmc_chain = get_mcmc_samples(length_pilot_run, starting_state, starting_Jtnorm_create, unnormalised_logposterior; print_acceptance_rate = false,  warmup_percentage =  warmup_percentage)
+    mcmc_chain = get_mcmc_samples(length_pilot_run, starting_state, starting_Jtnorm_create, unnormalised_logposterior; print_acceptance_rate = false,  warmup_percentage =  warmup_percentage, silence = silence)
 
     estimated_cov_matrix = cov(AnalyticalNonlinearShrinkage(;corrected=false),mcmc_chain') |> Hermitian |> collect
 

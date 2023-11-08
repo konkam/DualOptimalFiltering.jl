@@ -1,6 +1,7 @@
 function WF_loglikelihood_from_adaptive_filtering(α, data, do_the_pruning::Function; silence = false)
 
-    @assert length(α) == length(data[collect(keys(data))[1]])
+    # @assert length(α) == length(data[collect(keys(data))[1]])
+    @assert length(α) == length(data[data |> keys |> first])
     Δts = keys(data) |> collect |> sort |> diff |> unique
     if length(Δts) > 1
         test_equal_spacing_of_observations(data; override = false)

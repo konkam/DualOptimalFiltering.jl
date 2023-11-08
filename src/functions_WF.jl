@@ -1,13 +1,17 @@
 using ExactWrightFisher
 
-function prepare_WF_dat_1D_2D(data::Dict{Float64,Array{Int64,2}})
+function prepare_WF_dat_1D_2D(data::Dict{Float64, Array{Int64,2}})
     times = data |> keys |> collect |> sort
     return Dict(zip(times, [vec(data[t]) for t in times])), data
 end
-function prepare_WF_dat_1D_2D(data::Dict{Float64,Array{Int64,1}})
+function prepare_WF_dat_1D_2D(data::Dict{Float64, Array{Int64,1}})
     times = data |> keys |> collect |> sort
     return data, zip(times, [collect(data[t]') for t in times]) |> Dict
 end
+# function prepare_WF_dat_1D_2D(data::Dict{Float64, LinearAlgebra.Adjoint{Int64, Matrix{Int64}}})
+#     times = data |> keys |> collect |> sort
+#     return data, zip(times, [collect(data[t]') for t in times]) |> Dict
+# end
 
 function precompute_next_terms_ar!(last_sm_max::Integer, new_sm_max::Integer, log_ν_ar::Array{Float64,2}, log_Cmmi_ar::Array{Float64,2}, log_binomial_coeff_ar_offset::Array{Float64,2}, sα, Δt)
     if last_sm_max == 0

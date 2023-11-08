@@ -10,6 +10,23 @@ function dirichletkernel_oneval(x::RealVector, xdata::RealVector, λ::Real; log 
     end
 end
 
+function dirichletkernel_marginals_oneval(x::T, margin::U, xdata::RealVector, λ::Real; log = false) where {T<:Real, U<:Integer}
+
+    dst = Beta(1 + xdata[margin]/λ, sum(1 .+ xdata[1:end .!= margin])/λ)
+
+    if(log)
+        return logpdf(dst, x)
+    else
+        return pdf(dst, x)
+    end
+
+end
+
+function dirichletkernel_marginals_oneval(x::RealVector, xdata::RealVector, λ::Real; log = false) 
+    return dirichletkernel_marginals_oneval.(x, eachindex(x), Ref(xdata), λ; log = log)
+end
+
+
 function dirichletkernel(x::RealVector, xdata::RealMatrix, λ::Real, w::Vector, n::Int; log = false)
     # w .= mapslices(xdatavec -> dirichletkernel_oneval(x, xdatavec, λ), xdata, 2) |> vec
     for i in eachindex(w)
@@ -25,6 +42,39 @@ function dirichletkernel(x::RealVector, xdata::Array{Array{Float64,1},1}, λ::Re
     end
     nothing
 end
+
+
+
+function dirichletkernel_marginals_oneval(x::T, margin::U, xdata::RealVector, λ::Real; log = false) where {T<:Real, U<:Integer}
+
+    dst = Beta(1 + xdata[margin]/λ, sum(1 .+ xdata[1:end .!= margin])/λ)
+
+    if(log)
+        return logpdf(dst, x)
+    else
+        return pdf(dst, x)
+    end
+
+end
+
+ function dirichletkernel_marginals(x::T, margin::U, xdata::RealMatrix, λ::Real; log = false) where {T<:Real, U<:Integer}
+    
+    @assert margin <= size(xdata, 2)
+
+    if(log)
+        return logsumexp(dirichletkernel_marginals_oneval(x, margin, xdata[i, :], λ::Real; log = true) for i in size(xdata, 1))-size(xdata, 1)
+    else
+        return mean(dirichletkernel_marginals_oneval(x, margin, xdata[i, :], λ::Real; log = false) for i in size(xdata, 1))
+    end
+end
+
+function dirichletkernel_marginals(x::RealVector, xdata::RealMatrix, λ::Real; log = false) 
+
+    @assert length(x) == size(xdata, 2)
+
+    return dirichletkernel_marginals.(x, eachindex(x), Ref(xdata), λ; log = log)
+end
+
 
 function midrange(x::RealMatrix)
     mapslices(xvec -> quantile(xvec, [.25, .75]), x, dims = 1) |> x -> x[2,:] - x[1,:] |> maximum

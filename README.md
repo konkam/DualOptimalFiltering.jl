@@ -92,7 +92,7 @@ Filtering distribution, 95% credible band and true hidden signal:
 ```julia
 using Plots
 
-function plot_data_and_posterior_distribution_CIR(δ, θ_of_t, Λ_of_t, wms_of_t, data, X_CIR)
+function plot_data_and_posterior_distribution2(δ, θ_of_t, Λ_of_t, wms_of_t, data, X_CIR)
     times = keys(data) |> collect |> sort;
     psi_t = [DualOptimalFiltering.create_Gamma_mixture_density(δ, θ_of_t[t], Λ_of_t[t], wms_of_t[t]) for t in times];
     qt0025 = [DualOptimalFiltering.compute_quantile_mixture_hpi(δ, θ_of_t[t], Λ_of_t[t], wms_of_t[t], 0.025) for t in keys(data) |> collect |> sort];
@@ -110,7 +110,7 @@ function plot_data_and_posterior_distribution_CIR(δ, θ_of_t, Λ_of_t, wms_of_t
 
 end
 
-pl = plot_data_and_posterior_distribution_CIR(δ, θ_of_t_CIR, Λ_of_t_CIR, wms_of_t_CIR, data_CIR, X_CIR)
+pl = plot_data_and_posterior_distribution2(δ, θ_of_t_CIR, Λ_of_t_CIR, wms_of_t_CIR, data_CIR, X_CIR)
 ```
 
 ![](figures/README_4_1.png)

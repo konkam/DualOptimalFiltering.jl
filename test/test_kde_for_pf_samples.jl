@@ -8,6 +8,9 @@ using Distributions, Random
     @test res[2] ≈ 0.4670348611479834 atol=10^(-10)
     res = DualOptimalFiltering.create_gamma_kde_mixture_parameters([1,4,6])
     @test length(res[1]) == length(res[2])
+
+    res = DualOptimalFiltering.create_Gamma_mixture_density_smp(rand(Gamma(), 100))
+    @test isreal(res(1.1))
 end;
 
 @testset "test Dirichlet kde function" begin

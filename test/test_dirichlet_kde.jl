@@ -16,6 +16,29 @@ using Distributions, Random
     # for i in eachindex(w)
     #     @test w[i] .≈ res[i] atol=10.0^(-5)
     # end
+
+    @test DualOptimalFiltering.dirichletkernel_marginals_oneval(1, 1, [1,1,1,1], 1; log = false) == 0
+
+
+    @test length(DualOptimalFiltering.dirichletkernel_marginals_oneval([1,1,1,1], [1,1,1,1], 1; log = false)) == 4
+
+    tt = DualOptimalFiltering.dirichletkernel_marginals_oneval([0.8,0.8,0.8,0.8], [0,0,0,0], 1; log = false) .== pdf(Beta(1, 3), 0.8)
+
+    for t in tt
+        @test t
+    end
+
+    @test length(DualOptimalFiltering.dirichletkernel_marginals_oneval([1,1,1,1], [1,1,1,1], 1; log = false)) == 4
+
+
+    @test DualOptimalFiltering.dirichletkernel_marginals(1, 1, X, 1; log = false) == 0
+
+    tt = DualOptimalFiltering.dirichletkernel_marginals([1,1,1,1], collect(X), 1; log = false) .== 0
+
+    for t in tt
+        @test t
+    end
+
 end;
 
 

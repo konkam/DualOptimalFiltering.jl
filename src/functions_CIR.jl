@@ -30,7 +30,7 @@ end
 function next_wms_from_wms_prime(wms_prime, Λ_prime, y, θ_prime, α)#update
     #Make sure we deal correctly with weights equal to 0
     #Probably harmonise what can be improved in the filtering algorithm
-    unnormalised_wms = wms_prime .* DualOptimalFiltering.μπh(Λ_prime, θ_prime, α, y)
+    unnormalised_wms = wms_prime .* μπh(Λ_prime, θ_prime, α, y)
     return unnormalised_wms |> DualOptimalFiltering.normalise
 end
 

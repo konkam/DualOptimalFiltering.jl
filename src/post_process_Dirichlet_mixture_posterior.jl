@@ -31,7 +31,7 @@ function for_one_marginal(α, margin, Λ_of_t, wms_of_t)
     times = Λ_of_t |> keys |> collect |> sort
 
     marginal_psi_t = [create_marginal_beta_mixture(α, Λ_of_t[t], wms_of_t[t], margin) for t in times]
-    [DataFrame(x = range(0, stop = 1, length = 100)) |> df -> @transform(df, dens = f.(:x)) for f in marginal_psi_t] |>
+    [DataFrame(x = range(0, stop = 1, length = 100)) |> df -> @transform(df, :dens = f.(:x)) for f in marginal_psi_t] |>
 dfs -> map((dfi, ti) -> dfi |> @mutate(time = ti, variable = "x$margin") |> DataFrame, dfs, times) |>
     dfs -> vcat(dfs...)
 end

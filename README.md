@@ -15,7 +15,7 @@ Optimal filtering, smoothing, and general inference using a dual process.
 
 
 This package provides a set of functions to perform exact optimal filtering, smoothing, or general inference using a dual process. Several approximation strategies are also implemented.
-We provide examples on the Cox-Ingersoll-Ross model with Poisson distributed data and on the Wright-Fisher model with multinomial distributed data.
+We provide examples of the Cox-Ingersoll-Ross model with Poisson distributed data and the Wright-Fisher model with multinomial distributed data.
 
 The algorithms in this package are presented in:
 
@@ -23,7 +23,7 @@ The algorithms in this package are presented in:
 
  and:
 
- [Kon Kam King, G., Pandolfi, A., Piretto, M., and Ruggiero, M., “Approximate filtering via discrete dual processes”, arXiv e-prints, 2023. doi:10.48550/arXiv.2310.00599.](https://arxiv.org/abs/2310.00599)
+ [Kon Kam King, G., Pandolfi, A., Piretto, M., and Ruggiero, M., “Approximate filtering via discrete dual processes”, Stochastic Processes and their Applications 168 (2024): 104268.](https://arxiv.org/abs/2310.00599)
 
 ## Installation
 

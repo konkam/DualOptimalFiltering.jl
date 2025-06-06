@@ -1,4 +1,4 @@
-This is the README for reproducing the figures from the manuscript "Approximate filtering via discrete dual processes", by Kon Kam King, Pandolfi, Piretto & Ruggiero (2023)
+This is the README for reproducing the figures from the articlegit "Approximate filtering via discrete dual processes", by Kon Kam King, Pandolfi, Piretto & Ruggiero (2023)
 
 ## Requirements
 
@@ -9,7 +9,7 @@ You may need to input the following command to download and install the relevant
 
 julia +1.8 --project=. -e "using Pkg; Pkg.instantiate()"
 
-For more information or troubleshooting, backgroound information about environment managament in Julia is available at https://docs.julialang.org/en/v1/stdlib/Pkg/
+For more information or troubleshooting, background information about environment management in Julia is available at https://docs.julialang.org/en/v1/stdlib/Pkg/
 
 
 Note: the script scripts_for_figures/filtering_error_computation_WF.jl requires a significant amount of RAM memory. The code has been run on a cluster, if you wish to run it on your personal computer make sure you have a sufficient amount of RAM available.

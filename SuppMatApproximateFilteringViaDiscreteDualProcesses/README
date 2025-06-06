@@ -1,4 +1,6 @@
-This is the README for reproducing the figures from the articlegit "Approximate filtering via discrete dual processes", by Kon Kam King, Pandolfi, Piretto & Ruggiero (2023)
+This is the README for reproducing the figures from the article Kon Kam King, G., Pandolfi, A., Piretto, M., & Ruggiero, M. (2024). Approximate filtering via discrete dual processes. Stochastic Processes and Their Applications, 168, 104268.
+
+It describes the Julia and R scripts used to generate the figures in the article, as well as the Makefile used to run them.
 
 ## Requirements
 

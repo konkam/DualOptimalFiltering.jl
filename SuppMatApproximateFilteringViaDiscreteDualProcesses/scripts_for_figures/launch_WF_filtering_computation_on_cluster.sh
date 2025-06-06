@@ -1,0 +1,1 @@
+qsub -cwd -V -N WF_filtering_error -pe thread 20 -R y -q infinit.q -b y "julia --threads 20 scripts_for_figures/filtering_error_computation_WF.jl"

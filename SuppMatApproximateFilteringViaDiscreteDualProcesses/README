@@ -1,0 +1,26 @@
+This is the README for reproducing the figures from the manuscript "Approximate filtering via discrete dual processes", by Kon Kam King, Pandolfi, Piretto & Ruggiero (2023)
+
+## Requirements
+
+- Julia 1.8
+- R >= 4.0 with package tidyverse
+
+You may need to input the following command to download and install the relevant Julia packages: 
+
+julia +1.8 --project=. -e "using Pkg; Pkg.instantiate()"
+
+For more information or troubleshooting, backgroound information about environment managament in Julia is available at https://docs.julialang.org/en/v1/stdlib/Pkg/
+
+
+Note: the script scripts_for_figures/filtering_error_computation_WF.jl requires a significant amount of RAM memory. The code has been run on a cluster, if you wish to run it on your personal computer make sure you have a sufficient amount of RAM available.
+
+
+
+
+## Source files dependency graph (as read and summarised from the Makefile): 
+
+- scripts_for_figures/filtering_error_plot_CIR.R <- scripts_for_figures/filtering_error_computation_CIR.jl <- filtering_error_helper_functions_CIR.jl <- variability_of_prediction_CIR.jl <- expand_grid.jl
+- scripts_for_figures/convergence_predictive_dist_CIR.jl 
+
+- scripts_for_figures/convergence_predictive_dist_WF.jl <- scripts_for_figures/simulate_WF_data.jl
+- scripts_for_figures/filtering_error_plot_WF.R <- scripts_for_figures/filtering_error_computation_WF.jl <- scripts_for_figures/filtering_error_helper_functions_WF.jl <- scripts_for_figures/variability_of_prediction_WF.jl <- expand_grid.jl

@@ -1,0 +1,12 @@
+[deps]
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+DataFramesMeta = "1313f7d8-7da2-5740-9ea0-a2ca25f37964"
+Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+DualOptimalFiltering = "7baf8b3f-9d52-46d6-903d-a738528ccf5a"
+ExactWrightFisher = "8c1589a6-e1d0-11e8-3509-29fca4fccf6a"
+FeynmanKacParticleFilters = "b43f8e06-e683-11e8-294f-8d3ef32cb08c"
+JLD = "4138dd39-2aa7-5051-a626-17a0bb65d9c8"
+KernelEstimator = "857edff2-01a9-55ba-8bc9-13e46c0ddbb2"
+RCall = "6f49c342-dc21-5d91-9882-a32aef131414"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"

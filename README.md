@@ -15,7 +15,7 @@ Optimal filtering, smoothing, and general inference using a dual process.
 
 
 This package provides a set of functions to perform exact optimal filtering, smoothing, or general inference using a dual process. Several approximation strategies are also implemented.
-We provide examples of the Cox-Ingersoll-Ross model with Poisson distributed data and the Wright-Fisher model with multinomial distributed data.
+We provide examples on the Cox-Ingersoll-Ross model with Poisson distributed data and on the Wright-Fisher model with multinomial distributed data.
 
 The algorithms in this package are presented in:
 
@@ -23,7 +23,9 @@ The algorithms in this package are presented in:
 
  and:
 
- [Kon Kam King, G., Pandolfi, A., Piretto, M., and Ruggiero, M., “Approximate filtering via discrete dual processes”, Stochastic Processes and their Applications 168 (2024): 104268.](https://arxiv.org/abs/2310.00599)
+ [Kon Kam King, G., Pandolfi, A., Piretto, M., and Ruggiero, M., “Approximate filtering via discrete dual processes”, arXiv e-prints, 2023. doi:10.48550/arXiv.2310.00599.](https://arxiv.org/abs/2310.00599)
+
+To reproduce the results of this last paper, please follow think [link](https://github.com/konkam/DualOptimalFiltering.jl/tree/master/SuppMatApproximateFilteringViaDiscreteDualProcesses).
 
 ## Installation
 
@@ -60,16 +62,16 @@ data_CIR, X_CIR,  δ, γ, σ, λ = simulate_CIR_data()
 ```
 
 ```
-(Dict(0.066 => [3, 4, 7, 10, 2], 0.495 => [3, 3, 4, 2, 3], 0.517 => [5, 5, 
-9, 7, 5], 0.0 => [2, 3, 3, 3, 2], 0.011 => [2, 3, 2, 2, 0], 0.044 => [4, 10
-, 4, 7, 4], 0.32999999999999996 => [8, 5, 3, 11, 3], 0.429 => [5, 5, 8, 4, 
-5], 0.297 => [2, 6, 6, 4, 4], 0.484 => [3, 4, 2, 1, 5]…), [3.0, 2.143688536
-6092575, 5.636996800109125, 7.970848341867707, 7.520739769358552, 5.1613203
-55005335, 4.449277195722735, 5.112513985330582, 2.087873323401826, 1.401834
-670577054  …  3.3969990970050365, 7.802843753312557, 5.347636270957629, 4.1
-49587545543895, 4.433627795081461, 3.561145886626744, 2.949889530858949, 4.
-374296960131622, 6.503125616716986, 3.6659309862002507], 3.0, 2.5, 4.0, 1.0
-)
+(Dict(0.066 => [11, 11, 13, 10, 10], 0.495 => [0, 0, 1, 0, 1], 0.517 => [1,
+ 0, 0, 0, 0], 0.0 => [2, 4, 3, 3, 4], 0.011 => [2, 4, 3, 3, 7], 0.044 => [1
+0, 9, 15, 7, 11], 0.32999999999999996 => [5, 6, 7, 8, 10], 0.429 => [0, 2, 
+2, 1, 1], 0.297 => [7, 7, 9, 5, 12], 0.484 => [3, 4, 1, 2, 1]…), [3.0, 3.72
+3532499649616, 8.470635291153902, 9.489027893552537, 10.814504027331033, 13
+.272405249903072, 13.457832464711736, 14.833968541466481, 12.02819403450069
+1, 18.496172502451653  …  0.6137720862932144, 0.9366907406698955, 0.4411422
+7274705714, 0.8539993574335446, 2.028382790454061, 1.2634067715766795, 0.49
+20197593417884, 0.7705729517362788, 0.26943866322035886, 0.1003170726660764
+2], 3.0, 2.5, 4.0, 1.0)
 ```
 
 
@@ -92,7 +94,7 @@ Filtering distribution, 95% credible band and true hidden signal:
 ```julia
 using Plots
 
-function plot_data_and_posterior_distribution2(δ, θ_of_t, Λ_of_t, wms_of_t, data, X_CIR)
+function plot_data_and_posterior_distribution_CIR(δ, θ_of_t, Λ_of_t, wms_of_t, data, X_CIR)
     times = keys(data) |> collect |> sort;
     psi_t = [DualOptimalFiltering.create_Gamma_mixture_density(δ, θ_of_t[t], Λ_of_t[t], wms_of_t[t]) for t in times];
     qt0025 = [DualOptimalFiltering.compute_quantile_mixture_hpi(δ, θ_of_t[t], Λ_of_t[t], wms_of_t[t], 0.025) for t in keys(data) |> collect |> sort];
@@ -110,7 +112,7 @@ function plot_data_and_posterior_distribution2(δ, θ_of_t, Λ_of_t, wms_of_t, d
 
 end
 
-pl = plot_data_and_posterior_distribution2(δ, θ_of_t_CIR, Λ_of_t_CIR, wms_of_t_CIR, data_CIR, X_CIR)
+pl = plot_data_and_posterior_distribution_CIR(δ, θ_of_t_CIR, Λ_of_t_CIR, wms_of_t_CIR, data_CIR, X_CIR)
 ```
 
 ![](figures/README_4_1.png)
@@ -142,13 +144,13 @@ data_WF, X_WF, α = simulate_WF_data()
 ```
 
 ```
-(Dict(0.0 => [0, 0, 15, 0], 0.4 => [2, 0, 5, 8], 0.5 => [0, 0, 4, 11], 0.2 
-=> [0, 0, 15, 0], 0.30000000000000004 => [0, 0, 10, 5], 0.1 => [0, 0, 15, 0
-]), [0.012525617889347201 0.012525617889347201 … 0.07182878835832707 0.0924
-838705402555; 0.01075362440894057 0.01075362440894057 … 0.02828992984038674
- 0.03921353723282274; 0.9320549585426033 0.9320549585426033 … 0.29362702126
-13407 0.20293512780114; 0.04466579915910869 0.04466579915910869 … 0.6062542
-605399454 0.6653674644257818], [1.0, 1.0, 1.0, 1.0])
+(Dict(0.0 => [0, 15, 0, 0], 0.4 => [2, 8, 4, 1], 0.5 => [5, 1, 0, 9], 0.2 =
+> [1, 13, 0, 1], 0.30000000000000004 => [2, 9, 0, 4], 0.1 => [0, 15, 0, 0])
+, [0.04724710027573588 0.04724710027573588 … 0.26383988492370086 0.23789540
+60152011; 0.9428777759655159 0.9428777759655159 … 0.368239528773016 0.25142
+92553972431; 0.0022212474912949327 0.0022212474912949327 … 0.17290642060493
+908 0.08254313519464326; 0.0076538762674533654 0.0076538762674533654 … 0.19
+501416569834396 0.4281322033929127], [1.0, 1.0, 1.0, 1.0])
 ```
 
 
@@ -168,9 +170,9 @@ Number of components: 16
 Step index: 3
 Number of components: 31
 Step index: 4
-Number of components: 46
+Number of components: 176
 Step index: 5
-Number of components: 336
+Number of components: 1272
 ```
 
 

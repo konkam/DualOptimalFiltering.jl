@@ -1,6 +1,7 @@
-import StatsBase: RealVector, RealMatrix
-using KernelEstimator, Optim
-import KernelEstimator.lcv, KernelEstimator.bwlcv, KernelEstimator.midrange
+#import StatsBase: RealVector, RealMatrix
+#using KernelEstimator, 
+using Optim
+#import KernelEstimator.lcv, KernelEstimator.bwlcv, KernelEstimator.midrange
 
 function dirichletkernel_oneval(x::RealVector, xdata::RealVector, λ::Real; log = false)
     if(log)
@@ -44,19 +45,6 @@ function dirichletkernel(x::RealVector, xdata::Array{Array{Float64,1},1}, λ::Re
 end
 
 
-
-function dirichletkernel_marginals_oneval(x::T, margin::U, xdata::RealVector, λ::Real; log = false) where {T<:Real, U<:Integer}
-
-    dst = Beta(1 + xdata[margin]/λ, sum(1 .+ xdata[1:end .!= margin])/λ)
-
-    if(log)
-        return logpdf(dst, x)
-    else
-        return pdf(dst, x)
-    end
-
-end
-
  function dirichletkernel_marginals(x::T, margin::U, xdata::RealMatrix, λ::Real; log = false) where {T<:Real, U<:Integer}
     
     @assert margin <= size(xdata, 2)
@@ -75,6 +63,10 @@ function dirichletkernel_marginals(x::RealVector, xdata::RealMatrix, λ::Real; l
     return dirichletkernel_marginals.(x, eachindex(x), Ref(xdata), λ; log = log)
 end
 
+function midrange(x)
+    lq, uq = quantile(x, [.25, .75])
+    return uq - lq
+end
 
 function midrange(x::RealMatrix)
     mapslices(xvec -> quantile(xvec, [.25, .75]), x, dims = 1) |> x -> x[2,:] - x[1,:] |> maximum

@@ -16,7 +16,7 @@ function multinomial_logpotential(obs_vector::AbstractArray{T, 2}) where T <: Re
 end
 
 
-function create_transition_kernels_WF(data, α_vec::AbstractArray{U, 1}) where {T <: Real, U <: Real}
+function create_transition_kernels_WF(data, α_vec::AbstractArray{U, 1}) where U <: Real
     sα = sum(α_vec)
     K = length(α_vec)
     function create_Mt(Δt)

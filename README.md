@@ -23,7 +23,7 @@ The algorithms in this package are presented in:
 
  and:
 
- [Kon Kam King, G., Pandolfi, A., Piretto, M., and Ruggiero, M., “Approximate filtering via discrete dual processes”, arXiv e-prints, 2023. doi:10.48550/arXiv.2310.00599.](https://arxiv.org/abs/2310.00599)
+ [Kon Kam King, G., Pandolfi, A., Piretto, M., & Ruggiero, M. (2024). Approximate filtering via discrete dual processes. Stochastic Processes and Their Applications, 168, 104268.](https://www.sciencedirect.com/science/article/abs/pii/S0304414923002405), [ArXiV](https://arxiv.org/abs/2310.00599)
 
 To reproduce the results of this last paper, please follow think [link](https://github.com/konkam/DualOptimalFiltering.jl/tree/master/SuppMatApproximateFilteringViaDiscreteDualProcesses).
 
